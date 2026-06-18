@@ -3,7 +3,8 @@
 Portfolio of the apps built by non-developers during the **"Faire une petite appli
 avec une IA, sans coder"** workshop. Served as a static site on GitHub Pages.
 
-**Live:** https://martinsson.github.io/business-people-coding/
+**Live:** https://www.changit.fr/business-people-coding/
+(also reachable at https://martinsson.github.io/business-people-coding/)
 
 ## Layout
 
