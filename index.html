@@ -5,68 +5,215 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Business People Coding — portfolio des ateliers</title>
 <style>
-  :root { --blue:#0b6bcb; --ink:#1a1a1a; --muted:#666; --bg:#fafafa; --card:#fff; --line:#e6e6e6; }
-  * { box-sizing:border-box; }
-  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; }
-  header { padding:56px 24px 28px; max-width:980px; margin:0 auto; }
-  h1 { color:var(--blue); font-size:2.1em; margin:0 0 8px; }
-  header p { color:var(--muted); margin:4px 0; max-width:60ch; }
-  main { max-width:980px; margin:0 auto; padding:0 24px 64px; }
-  section { margin-top:40px; }
-  .session-head { display:flex; align-items:baseline; gap:12px; border-bottom:2px solid var(--blue); padding-bottom:6px; }
-  .session-head h2 { color:var(--blue); margin:0; font-size:1.4em; }
-  .session-head .tag { color:var(--muted); font-size:.85em; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; margin-top:18px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 18px 16px; display:flex; flex-direction:column; transition:box-shadow .15s,transform .15s; }
-  .card:hover { box-shadow:0 6px 20px rgba(11,107,203,.12); transform:translateY(-2px); }
-  .card h3 { margin:0 0 4px; font-size:1.1em; }
-  .card .who { color:var(--blue); font-weight:600; font-size:.8em; text-transform:uppercase; letter-spacing:.04em; }
-  .card p { color:var(--muted); font-size:.92em; margin:8px 0 14px; flex:1; }
-  .card a.open { align-self:flex-start; text-decoration:none; background:var(--blue); color:#fff; padding:7px 14px; border-radius:8px; font-size:.9em; font-weight:600; }
-  .card a.open:hover { background:#095aad; }
-  footer { max-width:980px; margin:0 auto; padding:24px; color:var(--muted); font-size:.85em; border-top:1px solid var(--line); }
-  code { background:#eef3f8; padding:1px 6px; border-radius:5px; font-size:.85em; }
+  :root{
+    --blue:#0b6bcb; --blue-d:#084e96; --ink:#15202b; --muted:#5b6b7b;
+    --bg:#f4f7fb; --card:#fff; --line:#e7edf3; --shadow:rgba(13,38,76,.10);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;}
+
+  /* ---- header ---- */
+  header{position:relative;overflow:hidden;color:#fff;
+    background:linear-gradient(135deg,#0b6bcb 0%,#0a4f9e 55%,#073b78 100%);}
+  header .wrap{max-width:1080px;margin:0 auto;padding:64px 24px 52px;position:relative;z-index:1;}
+  header::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(60% 120% at 85% -10%,rgba(255,255,255,.18),transparent 60%);}
+  h1{font-size:2.5em;margin:0 0 10px;letter-spacing:-.02em;}
+  header p{margin:6px 0;max-width:62ch;color:#dbe9fb;font-size:1.04em;}
+  .pill{display:inline-block;margin-top:18px;padding:5px 13px;border-radius:999px;
+    background:rgba(255,255,255,.16);font-size:.82em;font-weight:600;backdrop-filter:blur(4px);}
+
+  main{max-width:1080px;margin:0 auto;padding:8px 24px 72px;}
+  section{margin-top:48px;}
+  .session-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    border-bottom:2px solid var(--line);padding-bottom:10px;}
+  .session-head h2{color:var(--ink);margin:0;font-size:1.35em;letter-spacing:-.01em;}
+  .session-head .tag{color:var(--muted);font-size:.82em;}
+  .session-head .tag code{background:#eaf1f9;color:var(--blue-d);padding:2px 7px;border-radius:6px;font-size:.92em;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px;margin-top:24px;}
+
+  /* ---- card ---- */
+  .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;
+    box-shadow:0 1px 2px var(--shadow);transition:box-shadow .2s,transform .2s,border-color .2s;}
+  .card:hover{transform:translateY(-4px);box-shadow:0 16px 36px var(--shadow);border-color:#cfe0f1;}
+
+  .thumb{position:relative;aspect-ratio:16/10;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--c1,#dbe9fb),var(--c2,#b9d4f3));}
+  .thumb .emoji{font-size:3.4em;filter:drop-shadow(0 2px 6px rgba(0,0,0,.12));opacity:.9;}
+  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;
+    transition:transform .45s ease;background:#fff;}
+  .card:hover .thumb img{transform:scale(1.07);}
+  .thumb img[src=""],.thumb img:not([src]){display:none;}
+
+  .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1;}
+  .who{color:var(--blue);font-weight:700;font-size:.72em;text-transform:uppercase;letter-spacing:.07em;}
+  .card h3{margin:5px 0 0;font-size:1.12em;letter-spacing:-.01em;}
+  .card p{color:var(--muted);font-size:.92em;margin:8px 0 16px;flex:1;}
+  .open{align-self:flex-start;font-weight:600;font-size:.9em;color:var(--blue);
+    display:inline-flex;align-items:center;gap:5px;}
+  .card:hover .open{color:var(--blue-d);}
+  .open .arr{transition:transform .2s;}
+  .card:hover .open .arr{transform:translateX(3px);}
+
+  footer{max-width:1080px;margin:0 auto;padding:28px 24px 48px;color:var(--muted);
+    font-size:.85em;border-top:1px solid var(--line);}
+  footer a{color:var(--blue);}
 </style>
 </head>
 <body>
 <header>
-  <h1>Business People Coding</h1>
-  <p>Portfolio des applications créées par des non-développeurs lors de l'atelier
-     « Faire une petite appli avec une IA, sans coder ».</p>
-  <p>Chaque session est archivée telle qu'elle était à la fin de l'atelier. Les applis
-     sont 100 % statiques et fonctionnent dans le navigateur.</p>
+  <div class="wrap">
+    <h1>Business People Coding</h1>
+    <p>Portfolio des applications créées par des non-développeurs lors de l'atelier
+       « Faire une petite appli avec une IA, sans coder ».</p>
+    <p>Chaque session est archivée telle qu'elle était en fin d'atelier. Les applis sont
+       100 % statiques et tournent directement dans le navigateur.</p>
+    <span class="pill">4 sessions · 19 applis</span>
+  </div>
 </header>
 <main>
+  <!-- publish-session.sh insère les nouvelles sessions directement sous cette ligne -->
+
+  <section>
+    <div class="session-head"><h2>Session du 18 juin 2026</h2><span class="tag">tag <code>session-2026-06-18</code></span></div>
+    <div class="grid">
+      <a class="card" href="2026-06-18/group1/" style="--c1:#ffe9d6;--c2:#ffd0a8">
+        <div class="thumb"><span class="emoji">🍳</span><img src="2026-06-18/group1/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 1</span><h3>PantryChef</h3>
+          <p>Indiquez les ingrédients que vous avez chez vous et découvrez ce que vous pouvez cuisiner — plusieurs recettes radicalement différentes selon le mode de cuisson.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-18/group2/" style="--c1:#d6f0ff;--c2:#a8d8f5">
+        <div class="thumb"><span class="emoji">🧭</span><img src="2026-06-18/group2/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 2</span><h3>Trip Concierge</h3>
+          <p>Construisez un itinéraire de voyage sur mesure à partir de votre profil et des détails du séjour : étapes, activités et programme jour par jour.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-18/group3/" style="--c1:#e2dcff;--c2:#c2b6f5">
+        <div class="thumb"><span class="emoji">🏆</span><img src="2026-06-18/group3/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 3</span><h3>Coupe du Monde 2026</h3>
+          <p>Vue arborescente de la phase de groupes de la Coupe du Monde 2026 : tous les groupes et les équipes qualifiées d'un coup d'œil.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-18/group4/" style="--c1:#d8f5e6;--c2:#aee6c8">
+        <div class="thumb"><span class="emoji">📊</span><img src="2026-06-18/group4/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 4</span><h3>Team Maturity Compass</h3>
+          <p>Outil de leadership R&amp;D : enregistrez des événements, évaluez-les et suivez la maturité de votre équipe — de « low performing » à « high performing » — avec tendance et historique.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-18/group5/" style="--c1:#e8f5d6;--c2:#cce8a8">
+        <div class="thumb"><span class="emoji">🌳</span><img src="2026-06-18/group5/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 5</span><h3>Project Tree</h3>
+          <p>Explorateur arborescent de fichiers et dossiers (« Project Tree »), complété de deux mini-applis liées : « Food Recommendations » (plats, meilleur restaurant, historique) et « Match Predictor » (pronostics de matchs).</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+    </div>
+  </section>
 
   <section>
     <div class="session-head"><h2>Session du 16 juin 2026</h2><span class="tag">tag <code>session-2026-06-16</code></span></div>
     <div class="grid">
-      <div class="card"><span class="who">Groupe 1</span><h3>Punto Jungle 🐾</h3><p>Jeu de plateau « Punto » version jungle : alignez 4 de vos animaux pour régner sur la canopée. Parties contre des bots de difficulté réglable.</p><a class="open" href="2026-06-16/group1/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Groupe 2</span><h3>Équilibre</h3><p>Alimentation consciente : journal des ressentis de faim et reprogrammation mentale sur 21 jours, adaptée à votre profil.</p><a class="open" href="2026-06-16/group2/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Groupe 3</span><h3>BODACC — capital en Isère</h3><p>Explore les changements de capital social des entreprises de l'Isère à partir des annonces BODACC (open data).</p><a class="open" href="2026-06-16/group3/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Groupe 4</span><h3>PSYVAGO</h3><p>« Votre espace d'écoute » : annuaire de professionnels de santé (psychologues, médecins) via OpenDataSoft.</p><a class="open" href="2026-06-16/group4/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Groupe 5</span><h3>Bonjour Juan</h3><p>Page d'accueil minimale — point de départ à peine modifié.</p><a class="open" href="2026-06-16/group5/">Ouvrir →</a></div>
+      <a class="card" href="2026-06-16/group1/" style="--c1:#fde4cf;--c2:#f7c79c">
+        <div class="thumb"><span class="emoji">🐾</span><img src="2026-06-16/group1/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 1</span><h3>Punto Jungle 🐾</h3>
+          <p>Jeu de plateau « Punto » version jungle : alignez 4 de vos animaux pour régner sur la canopée. Parties contre des bots de difficulté réglable.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-16/group2/" style="--c1:#d8f5e6;--c2:#aee6c8">
+        <div class="thumb"><span class="emoji">🍃</span><img src="2026-06-16/group2/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 2</span><h3>Équilibre</h3>
+          <p>Alimentation consciente : journal des ressentis de faim et reprogrammation mentale sur 21 jours, adaptée à votre profil.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-16/group3/" style="--c1:#d6f0ff;--c2:#a8d8f5">
+        <div class="thumb"><span class="emoji">🏢</span><img src="2026-06-16/group3/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 3</span><h3>BODACC — capital en Isère</h3>
+          <p>Explore les changements de capital social des entreprises de l'Isère à partir des annonces BODACC (open data).</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-16/group4/" style="--c1:#e2dcff;--c2:#c2b6f5">
+        <div class="thumb"><span class="emoji">💬</span><img src="2026-06-16/group4/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 4</span><h3>PSYVAGO</h3>
+          <p>« Votre espace d'écoute » : annuaire de professionnels de santé (psychologues, médecins) via OpenDataSoft.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-16/group5/" style="--c1:#ffe9d6;--c2:#ffd0a8">
+        <div class="thumb"><span class="emoji">👋</span><img src="2026-06-16/group5/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 5</span><h3>Bonjour Juan</h3>
+          <p>Page d'accueil minimale — point de départ à peine modifié.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
     </div>
   </section>
 
   <section>
     <div class="session-head"><h2>Session du 10 juin 2026</h2><span class="tag">branche <code>solution/2026-06-10</code></span></div>
     <div class="grid">
-      <div class="card"><span class="who">Groupe 1</span><h3>Terrains de foot — Genève</h3><p>Réservation de terrains de foot à Genève : choix d'un créneau, code de réservation pour consulter/annuler, et gestion des terrains.</p><a class="open" href="2026-06-10/group1/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Groupe 2</span><h3>TravelMate</h3><p>Agence de voyage IA : décrivez votre voyage idéal et recevez un programme complet — vols, hôtel, activités, itinéraire jour par jour.</p><a class="open" href="2026-06-10/group2/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Groupe 3</span><h3>ServiceDesk Workspace</h3><p>Portail de support type ServiceNow : espace de travail de gestion de tickets.</p><a class="open" href="2026-06-10/group3/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Groupe 4</span><h3>Recensement</h3><p>Liste de personnes avec détection des doublons de prénom et édition en ligne. (La page d'accueil du dépôt est restée un « Hello World ».)</p><a class="open" href="2026-06-10/group4/recensement.html">Ouvrir →</a></div>
-      <div class="card"><span class="who">Groupe 5</span><h3>AgroAssistant</h3><p>Assistant de diagnostic végétal : identifie les problèmes et maladies des plantes.</p><a class="open" href="2026-06-10/group5/">Ouvrir →</a></div>
+      <a class="card" href="2026-06-10/group1/" style="--c1:#d8f5e6;--c2:#aee6c8">
+        <div class="thumb"><span class="emoji">⚽</span><img src="2026-06-10/group1/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 1</span><h3>Terrains de foot — Genève</h3>
+          <p>Réservation de terrains de foot à Genève : choix d'un créneau, code de réservation pour consulter/annuler, et gestion des terrains.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-10/group2/" style="--c1:#d6f0ff;--c2:#a8d8f5">
+        <div class="thumb"><span class="emoji">✈️</span><img src="2026-06-10/group2/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 2</span><h3>TravelMate</h3>
+          <p>Agence de voyage IA : décrivez votre voyage idéal et recevez un programme complet — vols, hôtel, activités, itinéraire jour par jour.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-10/group3/" style="--c1:#e2dcff;--c2:#c2b6f5">
+        <div class="thumb"><span class="emoji">🎫</span><img src="2026-06-10/group3/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 3</span><h3>ServiceDesk Workspace</h3>
+          <p>Portail de support type ServiceNow : espace de travail de gestion de tickets.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-10/group4/recensement.html" style="--c1:#fde4cf;--c2:#f7c79c">
+        <div class="thumb"><span class="emoji">📋</span><img src="2026-06-10/group4/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 4</span><h3>Recensement</h3>
+          <p>Liste de personnes avec détection des doublons de prénom et édition en ligne. (La page d'accueil du dépôt est restée un « Hello World ».)</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-06-10/group5/" style="--c1:#e8f5d6;--c2:#cce8a8">
+        <div class="thumb"><span class="emoji">🌱</span><img src="2026-06-10/group5/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Groupe 5</span><h3>AgroAssistant</h3>
+          <p>Assistant de diagnostic végétal : identifie les problèmes et maladies des plantes.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
     </div>
   </section>
 
   <section>
     <div class="session-head"><h2>Session du 6 mai 2026</h2><span class="tag">versions récupérées — tags <code>recovered/*</code></span></div>
     <div class="grid">
-      <div class="card"><span class="who">Récupéré · groupe 1</span><h3>Gestion locative</h3><p>SPA de gestion locative — appartements, locations, loyers et charges — avec interface à barre latérale et icônes Lucide. (Une variante avec backend Spring Boot + PostgreSQL existe sur la branche <code>vbackend</code>.)</p><a class="open" href="2026-05-06/gestion-locative/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Récupéré</span><h3>Gestion des absences</h3><p>Suivi des absences d'une équipe : saisie et liste des absences, avec persistance dans un fichier JSON partagé.</p><a class="open" href="2026-05-06/absences/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Récupéré</span><h3>HIIT / Tabata Timer</h3><p>Minuteur d'intervalles pour séances HIIT / Tabata : configuration des temps d'effort et de repos.</p><a class="open" href="2026-05-06/timer/">Ouvrir →</a></div>
-      <div class="card"><span class="who">Récupéré</span><h3>Fête du quartier</h3><p>Formulaire d'inscription à la fête du quartier (Formspree) avec autocomplétion d'adresse SITG (Genève).</p><a class="open" href="2026-05-06/inscriptions/">Ouvrir →</a></div>
+      <a class="card" href="2026-05-06/gestion-locative/" style="--c1:#d6f0ff;--c2:#a8d8f5">
+        <div class="thumb"><span class="emoji">🏠</span><img src="2026-05-06/gestion-locative/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Récupéré · groupe 1</span><h3>Gestion locative</h3>
+          <p>SPA de gestion locative — appartements, locations, loyers et charges — avec barre latérale et icônes Lucide. (Une variante backend Spring Boot + PostgreSQL existe sur la branche <code>vbackend</code>.)</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-05-06/absences/" style="--c1:#e2dcff;--c2:#c2b6f5">
+        <div class="thumb"><span class="emoji">🗓️</span><img src="2026-05-06/absences/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Récupéré</span><h3>Gestion des absences</h3>
+          <p>Suivi des absences d'une équipe : saisie et liste des absences, avec persistance dans un fichier JSON partagé.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-05-06/timer/" style="--c1:#ffe0e0;--c2:#f7b9b9">
+        <div class="thumb"><span class="emoji">⏱️</span><img src="2026-05-06/timer/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Récupéré</span><h3>HIIT / Tabata Timer</h3>
+          <p>Minuteur d'intervalles pour séances HIIT / Tabata : configuration des temps d'effort et de repos.</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
+      <a class="card" href="2026-05-06/inscriptions/" style="--c1:#fde4cf;--c2:#f7c79c">
+        <div class="thumb"><span class="emoji">🎉</span><img src="2026-05-06/inscriptions/preview.png" alt="" loading="lazy"></div>
+        <div class="body"><span class="who">Récupéré</span><h3>Fête du quartier</h3>
+          <p>Formulaire d'inscription à la fête du quartier (Formspree) avec autocomplétion d'adresse SITG (Genève).</p>
+          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+      </a>
     </div>
   </section>
 
