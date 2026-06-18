@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HIIT / Tabata Timer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>HIIT / TABATA TIMER</h1>
+</header>
+<main>
+  <div id="screen" class="timer-screen ready">
+    <div class="phase" id="phase">Prêt ?</div>
+    <div class="countdown" id="countdown">00</div>
+    <div class="exercise-anim" id="anim"></div>
+    <div class="exercise" id="exercise">Appuie sur Start</div>
+    <div class="round-info" id="roundInfo"></div>
+    <div class="next-up" id="nextUp"></div>
+  </div>
+
+  <div class="controls">
+    <button id="startBtn" class="primary">Start</button>
+    <button id="pauseBtn" disabled>Pause</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+
+  <section class="config" id="config">
+    <h2>Configuration</h2>
+    <div class="row">
+      <label for="workTime">Temps d'effort (s)</label>
+      <input type="number" id="workTime" min="5" max="600" value="30">
+    </div>
+    <div class="row">
+      <label for="restTime">Temps de repos (s)</label>
+      <input type="number" id="restTime" min="0" max="600" value="15">
+    </div>
+    <div class="row">
+      <label for="rounds">Nombre de rounds</label>
+      <div class="stepper">
+        <button type="button" id="roundsMinus">−</button>
+        <input type="number" id="rounds" min="1" max="100" value="8">
+        <button type="button" id="roundsPlus">+</button>
+      </div>
+    </div>
+    <div class="row">
+      <label for="prepTime">Préparation (s)</label>
+      <input type="number" id="prepTime" min="0" max="60" value="10">
+    </div>
+    <div class="row">
+      <label>Coach</label>
+      <div class="coach-toggle" id="coachToggle">
+        <button type="button" data-coach="male">Homme</button>
+        <button type="button" data-coach="female">Femme</button>
+      </div>
+    </div>
+    <div>
+      <label for="exercises" style="display:block;margin-bottom:6px;">Exercices (un par ligne)</label>
+      <textarea id="exercises">Burpees
+Pompes
+Squats sautés
+Mountain climbers
+Gainage
+Fentes sautées
+Jumping jacks
+Crunchs</textarea>
+      <div class="hint">La liste défile à chaque round. Si elle est plus courte que le nombre de rounds, elle reboucle.</div>
+    </div>
+  </section>
+</main>
+<footer>Reste ton portable allumé pendant la séance ✊</footer>
+
+<script>
+(() => {
+  const screen = document.getElementById('screen');
+  const phaseEl = document.getElementById('phase');
+  const countdownEl = document.getElementById('countdown');
+  const exerciseEl = document.getElementById('exercise');
+  const roundInfoEl = document.getElementById('roundInfo');
+  const nextUpEl = document.getElementById('nextUp');
+  const animEl = document.getElementById('anim');
+  const startBtn = document.getElementById('startBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const config = document.getElementById('config');
+
+  const inputs = {
+    work: document.getElementById('workTime'),
+    rest: document.getElementById('restTime'),
+    rounds: document.getElementById('rounds'),
+    prep: document.getElementById('prepTime'),
+    exercises: document.getElementById('exercises'),
+  };
+
+  let state = 'idle'; // idle | prep | work | rest | done | paused
+  let prevState = null;
+  let lastAnimEx = null;
+  let coach = (localStorage.getItem('hiit-coach') === 'female') ? 'female' : 'male';
+  let timeLeft = 0;
+  let currentRound = 0;
+  let totalRounds = 8;
+  let workTime = 30;
+  let restTime = 15;
+  let prepTime = 10;
+  let exerciseList = [];
+  let intervalId = null;
+  let wakeLock = null;
+  const stepperBtns = [document.getElementById('roundsMinus'), document.getElementById('roundsPlus')];
+
+  // Beeps via Web Audio
+  let audioCtx = null;
+  function ensureAudio() {
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch (e) { audioCtx = null; }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function beep(freq = 880, duration = 150, volume = 0.25) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.frequency.value = freq;
+    osc.type = 'sine';
+    gain.gain.value = volume;
+    osc.connect(gain).connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    gain.gain.setValueAtTime(volume, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + duration / 1000);
+    osc.start(now);
+    osc.stop(now + duration / 1000);
+  }
+
+  async function requestWakeLock() {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLock = await navigator.wakeLock.request('screen');
+      }
+    } catch (e) { /* ignore */ }
+  }
+  function releaseWakeLock() {
+    if (wakeLock) { wakeLock.release().catch(()=>{}); wakeLock = null; }
+  }
+
+  function readConfig() {
+    workTime = clampInt(inputs.work.value, 1, 3600, 30);
+    restTime = clampInt(inputs.rest.value, 0, 3600, 15);
+    totalRounds = clampInt(inputs.rounds.value, 1, 200, 8);
+    prepTime = clampInt(inputs.prep.value, 0, 600, 10);
+    exerciseList = inputs.exercises.value
+      .split('\n')
+      .map(s => s.trim())
+      .filter(Boolean);
+  }
+  function clampInt(v, min, max, def) {
+    const n = parseInt(v, 10);
+    if (isNaN(n)) return def;
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function exerciseFor(round) {
+    if (exerciseList.length === 0) return '';
+    return exerciseList[(round - 1) % exerciseList.length];
+  }
+
+  function setScreenClass(cls) {
+    screen.classList.remove('work', 'rest', 'ready', 'done');
+    screen.classList.add(cls);
+  }
+
+  // --- Exercise animations ---------------------------------------------
+  function detectExercise(name) {
+    if (!name) return 'default';
+    const n = name.toLowerCase().normalize('NFD').replace(new RegExp('[\\u0300-\\u036f]', 'g'), '');
+    if (n.includes('pompe') || n.includes('push')) return 'pushup';
+    if (n.includes('jump squat') || n.includes('squat saute')) return 'jumpsquat';
+    if (n.includes('squat')) return 'squat';
+    if (n.includes('burpee')) return 'burpee';
+    if (n.includes('mountain') || n.includes('grimpeur')) return 'mountain';
+    if (n.includes('gainage') || n.includes('plank') || n.includes('planche')) return 'plank';
+    if (n.includes('fente') || n.includes('lunge')) return 'lunge';
+    if (n.includes('jumping') || n.includes('etoile') || n.includes('jack')) return 'jjack';
+    if (n.includes('crunch') || n.includes('abdo') || n.includes('abdom') || n.includes('situp') || n.includes('sit-up')) return 'crunch';
+    return 'default';
+  }
+
+  const SVG_ATTRS = 'stroke="var(--skin)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  function svgOne(content) {
+    return `<svg viewBox="0 0 100 100"><g ${SVG_ATTRS}>${content}</g></svg>`;
+  }
+  function svgState(content, klass) {
+    return `<svg viewBox="0 0 100 100" class="${klass}"><g ${SVG_ATTRS}>${content}</g></svg>`;
+  }
+  function oneState(klass, content) {
+    return `<div class="ex-anim ${klass}">${svgOne(content)}</div>`;
+  }
+  function twoState(klass, a, b) {
+    return `<div class="ex-anim ${klass} two-state">${svgState(a, 'state-a')}${svgState(b, 'state-b')}</div>`;
+  }
+
+  function head(cx, cy) {
+    return `<circle cx="${cx}" cy="${cy}" r="8" fill="var(--skin)" stroke="none"/>`;
+  }
+  function hair(cx, cy, rot) {
+    const r = rot || 0;
+    return `<g transform="translate(${cx},${cy}) rotate(${r})">
+      <path class="hair-only-m" d="M -8 0 C -11 -13, 11 -13, 8 0 Z" fill="var(--hair)" stroke="none"/>
+      <path class="hair-only-f" d="M -9 0 C -12 -14, 12 -14, 9 0 Z" fill="var(--hair)" stroke="none"/>
+      <path class="hair-only-f" d="M -9 -2 L -11 14 L -6 14 L -5 -2 Z" fill="var(--hair)" stroke="none"/>
+      <path class="hair-only-f" d="M 9 -2 L 11 14 L 6 14 L 5 -2 Z" fill="var(--hair)" stroke="none"/>
+    </g>`;
+  }
+  function torso(x1, y1, x2, y2) {
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--shirt)" stroke-width="14" stroke-linecap="round"/>`;
+  }
+  function shorts(x1, y1, x2, y2) {
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--shorts)" stroke-width="11" stroke-linecap="round"/>`;
+  }
+
+  const PARTS = {
+    pushup: `
+      <line x1="40" y1="58" x2="40" y2="80"/>
+      <line x1="68" y1="58" x2="68" y2="80"/>
+      <line x1="85" y1="58" x2="92" y2="64"/>
+      ${torso(28, 58, 82, 58)}
+      ${head(18, 58)}
+      ${hair(18, 58, -90)}`,
+    standing: `
+      <line x1="50" y1="36" x2="35" y2="50"/>
+      <line x1="50" y1="36" x2="65" y2="50"/>
+      <line x1="50" y1="60" x2="42" y2="86"/>
+      <line x1="50" y1="60" x2="58" y2="86"/>
+      ${torso(50, 30, 50, 60)}
+      ${shorts(43, 60, 57, 60)}
+      ${head(50, 20)}
+      ${hair(50, 20, 0)}`,
+    squat: `
+      <polyline points="50,60 38,72 42,86"/>
+      <polyline points="50,60 62,72 58,86"/>
+      <line x1="50" y1="38" x2="35" y2="52"/>
+      <line x1="50" y1="38" x2="65" y2="52"/>
+      ${torso(50, 32, 50, 60)}
+      ${shorts(43, 60, 57, 60)}
+      ${head(50, 24)}
+      ${hair(50, 24, 0)}`,
+    plank: `
+      <line x1="40" y1="58" x2="40" y2="80"/>
+      <line x1="68" y1="58" x2="68" y2="80"/>
+      <line x1="85" y1="58" x2="92" y2="64"/>
+      ${torso(28, 58, 82, 58)}
+      ${head(18, 58)}
+      ${hair(18, 58, -90)}`,
+    mcA: `
+      <line x1="38" y1="55" x2="38" y2="78"/>
+      <line x1="60" y1="55" x2="60" y2="78"/>
+      <polyline points="80,55 68,68 74,82"/>
+      <line x1="80" y1="55" x2="93" y2="80"/>
+      ${torso(28, 55, 80, 55)}
+      ${head(18, 55)}
+      ${hair(18, 55, -90)}`,
+    mcB: `
+      <line x1="38" y1="55" x2="38" y2="78"/>
+      <line x1="60" y1="55" x2="60" y2="78"/>
+      <line x1="80" y1="55" x2="93" y2="80"/>
+      <polyline points="80,55 68,68 74,82"/>
+      ${torso(28, 55, 80, 55)}
+      ${head(18, 55)}
+      ${hair(18, 55, -90)}`,
+    lungeA: `
+      <line x1="50" y1="36" x2="40" y2="50"/>
+      <line x1="50" y1="36" x2="60" y2="50"/>
+      <polyline points="50,60 65,74 65,86"/>
+      <polyline points="50,60 35,74 35,86"/>
+      ${torso(50, 30, 50, 60)}
+      ${shorts(43, 60, 57, 60)}
+      ${head(50, 20)}
+      ${hair(50, 20, 0)}`,
+    lungeB: `
+      <line x1="50" y1="36" x2="40" y2="50"/>
+      <line x1="50" y1="36" x2="60" y2="50"/>
+      <polyline points="50,60 35,74 35,86"/>
+      <polyline points="50,60 65,74 65,86"/>
+      ${torso(50, 30, 50, 60)}
+      ${shorts(43, 60, 57, 60)}
+      ${head(50, 20)}
+      ${hair(50, 20, 0)}`,
+    jjackI: `
+      <line x1="50" y1="36" x2="42" y2="60"/>
+      <line x1="50" y1="36" x2="58" y2="60"/>
+      <line x1="50" y1="62" x2="46" y2="88"/>
+      <line x1="50" y1="62" x2="54" y2="88"/>
+      ${torso(50, 30, 50, 62)}
+      ${shorts(44, 62, 56, 62)}
+      ${head(50, 20)}
+      ${hair(50, 20, 0)}`,
+    jjackX: `
+      <line x1="50" y1="34" x2="24" y2="22"/>
+      <line x1="50" y1="34" x2="76" y2="22"/>
+      <line x1="50" y1="60" x2="28" y2="86"/>
+      <line x1="50" y1="60" x2="72" y2="86"/>
+      ${torso(50, 30, 50, 60)}
+      ${shorts(43, 60, 57, 60)}
+      ${head(50, 22)}
+      ${hair(50, 22, 0)}`,
+    crunchFlat: `
+      <polyline points="32,82 48,55 65,75"/>
+      ${torso(65, 75, 88, 75)}
+      ${head(92, 75)}
+      ${hair(92, 75, 90)}`,
+    crunchUp: `
+      <polyline points="32,82 48,55 65,75"/>
+      ${torso(65, 75, 78, 56)}
+      ${head(80, 50)}
+      ${hair(80, 50, 60)}`,
+    runA: `
+      <line x1="50" y1="36" x2="38" y2="52"/>
+      <line x1="50" y1="36" x2="62" y2="46"/>
+      <line x1="50" y1="60" x2="42" y2="82"/>
+      <line x1="50" y1="60" x2="62" y2="86"/>
+      ${torso(50, 30, 50, 60)}
+      ${shorts(43, 60, 57, 60)}
+      ${head(50, 20)}
+      ${hair(50, 20, 0)}`,
+    runB: `
+      <line x1="50" y1="36" x2="62" y2="52"/>
+      <line x1="50" y1="36" x2="38" y2="46"/>
+      <line x1="50" y1="60" x2="58" y2="82"/>
+      <line x1="50" y1="60" x2="38" y2="86"/>
+      ${torso(50, 30, 50, 60)}
+      ${shorts(43, 60, 57, 60)}
+      ${head(50, 20)}
+      ${hair(50, 20, 0)}`,
+  };
+
+  const ANIMS = {
+    pushup:    oneState('ex-pushup', PARTS.pushup),
+    squat:     oneState('ex-squat', PARTS.squat),
+    jumpsquat: oneState('ex-jumpsquat', PARTS.squat),
+    plank:     oneState('ex-plank', PARTS.plank),
+    burpee:    twoState('ex-burpee', PARTS.standing, PARTS.plank),
+    mountain:  twoState('ex-mountain', PARTS.mcA, PARTS.mcB),
+    lunge:     twoState('ex-lunge', PARTS.lungeA, PARTS.lungeB),
+    jjack:     twoState('ex-jjack', PARTS.jjackI, PARTS.jjackX),
+    crunch:    twoState('ex-crunch', PARTS.crunchFlat, PARTS.crunchUp),
+    default:   twoState('ex-default', PARTS.runA, PARTS.runB),
+  };
+
+  function setAnim(exerciseName) {
+    const key = exerciseName ? detectExercise(exerciseName) : null;
+    if (key === lastAnimEx) return;
+    lastAnimEx = key;
+    animEl.innerHTML = key ? (ANIMS[key] || ANIMS.default) : '';
+  }
+
+  function render() {
+    countdownEl.textContent = String(timeLeft).padStart(2, '0');
+
+    if (state === 'idle') {
+      setScreenClass('ready');
+      phaseEl.textContent = 'Prêt ?';
+      exerciseEl.textContent = 'Appuie sur Start';
+      roundInfoEl.textContent = '';
+      nextUpEl.textContent = exerciseList[0] ? 'Premier : ' + exerciseList[0] : '';
+      setAnim(exerciseList[0] || 'aperçu');
+    } else if (state === 'prep') {
+      setScreenClass('ready');
+      phaseEl.textContent = 'Préparation';
+      exerciseEl.textContent = 'À suivre : ' + (exerciseFor(1) || '—');
+      roundInfoEl.textContent = `Round 1 / ${totalRounds}`;
+      nextUpEl.textContent = '';
+      setAnim(exerciseFor(1));
+    } else if (state === 'work') {
+      setScreenClass('work');
+      phaseEl.textContent = 'Effort';
+      exerciseEl.textContent = exerciseFor(currentRound) || '—';
+      roundInfoEl.textContent = `Round ${currentRound} / ${totalRounds}`;
+      const next = currentRound < totalRounds ? exerciseFor(currentRound + 1) : null;
+      nextUpEl.textContent = next ? 'Prochain : ' + next : 'Dernier round !';
+      setAnim(exerciseFor(currentRound));
+    } else if (state === 'rest') {
+      setScreenClass('rest');
+      phaseEl.textContent = 'Repos';
+      const next = exerciseFor(currentRound + 1);
+      exerciseEl.textContent = 'À suivre : ' + (next || '—');
+      roundInfoEl.textContent = `Round ${currentRound + 1} / ${totalRounds}`;
+      nextUpEl.textContent = '';
+      setAnim(next);
+    } else if (state === 'done') {
+      setScreenClass('done');
+      phaseEl.textContent = 'Terminé !';
+      countdownEl.textContent = '✓';
+      exerciseEl.textContent = 'Bien joué 💪';
+      roundInfoEl.textContent = `${totalRounds} rounds`;
+      nextUpEl.textContent = '';
+      setAnim(null);
+    } else if (state === 'paused') {
+      phaseEl.textContent = 'Pause';
+    }
+  }
+
+  function tick() {
+    timeLeft -= 1;
+    if (timeLeft <= 3 && timeLeft > 0) beep(880, 120, 0.2);
+    if (timeLeft <= 0) {
+      transition();
+    } else {
+      render();
+    }
+  }
+
+  function transition() {
+    if (state === 'prep') {
+      currentRound = 1;
+      state = 'work';
+      timeLeft = workTime;
+      beep(1200, 250, 0.3);
+    } else if (state === 'work') {
+      if (currentRound >= totalRounds) {
+        finish();
+        return;
+      }
+      if (restTime > 0) {
+        state = 'rest';
+        timeLeft = restTime;
+        beep(440, 250, 0.3);
+      } else {
+        currentRound += 1;
+        state = 'work';
+        timeLeft = workTime;
+        beep(1200, 250, 0.3);
+      }
+    } else if (state === 'rest') {
+      currentRound += 1;
+      state = 'work';
+      timeLeft = workTime;
+      beep(1200, 250, 0.3);
+    }
+    render();
+  }
+
+  function finish() {
+    stopInterval();
+    state = 'done';
+    beep(1200, 200, 0.3);
+    setTimeout(() => beep(1500, 400, 0.3), 220);
+    render();
+    startBtn.textContent = 'Start';
+    startBtn.disabled = false;
+    pauseBtn.disabled = true;
+    config.style.opacity = '1';
+    enableInputs(true);
+    releaseWakeLock();
+  }
+
+  function start() {
+    ensureAudio();
+    if (state === 'paused') {
+      state = prevState;
+      prevState = null;
+    } else if (state === 'idle' || state === 'done') {
+      readConfig();
+      currentRound = 0;
+      if (prepTime > 0) {
+        state = 'prep';
+        timeLeft = prepTime;
+      } else {
+        currentRound = 1;
+        state = 'work';
+        timeLeft = workTime;
+        beep(1200, 250, 0.3);
+      }
+      requestWakeLock();
+      enableInputs(false);
+      config.style.opacity = '0.5';
+    }
+    render();
+    stopInterval();
+    intervalId = setInterval(tick, 1000);
+    startBtn.disabled = true;
+    pauseBtn.disabled = false;
+    pauseBtn.textContent = 'Pause';
+  }
+
+  function pause() {
+    if (state === 'paused') {
+      start();
+    } else if (state !== 'idle' && state !== 'done') {
+      stopInterval();
+      prevState = state;
+      state = 'paused';
+      render();
+      countdownEl.textContent = String(timeLeft).padStart(2, '0');
+      startBtn.disabled = false;
+      startBtn.textContent = 'Reprendre';
+      pauseBtn.textContent = 'Pause';
+      pauseBtn.disabled = true;
+    }
+  }
+
+  function reset() {
+    stopInterval();
+    state = 'idle';
+    prevState = null;
+    currentRound = 0;
+    readConfig();
+    timeLeft = 0;
+    render();
+    countdownEl.textContent = '00';
+    startBtn.disabled = false;
+    startBtn.textContent = 'Start';
+    pauseBtn.disabled = true;
+    pauseBtn.textContent = 'Pause';
+    config.style.opacity = '1';
+    enableInputs(true);
+    releaseWakeLock();
+  }
+
+  function stopInterval() {
+    if (intervalId) { clearInterval(intervalId); intervalId = null; }
+  }
+
+  function enableInputs(enabled) {
+    Object.values(inputs).forEach(el => { el.disabled = !enabled; });
+    stepperBtns.forEach(btn => { btn.disabled = !enabled; });
+  }
+
+  function applyCoach() {
+    animEl.classList.toggle('coach-female', coach === 'female');
+    animEl.classList.toggle('coach-male', coach === 'male');
+    document.querySelectorAll('#coachToggle button').forEach(b => {
+      b.classList.toggle('active', b.dataset.coach === coach);
+    });
+  }
+  function setCoach(g) {
+    coach = (g === 'female') ? 'female' : 'male';
+    localStorage.setItem('hiit-coach', coach);
+    applyCoach();
+  }
+  document.querySelectorAll('#coachToggle button').forEach(b => {
+    b.addEventListener('click', () => setCoach(b.dataset.coach));
+  });
+  applyCoach();
+
+  document.getElementById('roundsMinus').addEventListener('click', () => {
+    inputs.rounds.value = Math.max(1, clampInt(inputs.rounds.value, 1, 100, 8) - 1);
+    inputs.rounds.dispatchEvent(new Event('change'));
+  });
+  document.getElementById('roundsPlus').addEventListener('click', () => {
+    inputs.rounds.value = Math.min(100, clampInt(inputs.rounds.value, 1, 100, 8) + 1);
+    inputs.rounds.dispatchEvent(new Event('change'));
+  });
+
+  startBtn.addEventListener('click', start);
+  pauseBtn.addEventListener('click', pause);
+  resetBtn.addEventListener('click', reset);
+
+  Object.values(inputs).forEach(el => {
+    el.addEventListener('change', () => {
+      if (state === 'idle') { readConfig(); render(); }
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.code === 'Space') {
+      e.preventDefault();
+      if (state === 'idle' || state === 'done' || state === 'paused') start();
+      else pause();
+    } else if (e.key.toLowerCase() === 'r') {
+      reset();
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && wakeLock === null && state !== 'idle' && state !== 'done') {
+      requestWakeLock();
+    }
+  });
+
+  readConfig();
+  render();
+})();
+</script>
+</body>
+</html>

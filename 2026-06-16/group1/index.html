@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Punto Jungle 🐾</title>
+<style>
+  :root {
+    --leaf-dark: #143d1f;
+    --leaf: #1f6b34;
+    --leaf-light: #2e9d4c;
+    --sun: #f4d35e;
+    --bark: #4b3621;
+    --board-bg: rgba(8, 28, 14, 0.55);
+    --cell: rgba(255, 255, 255, 0.06);
+    --cell-valid: rgba(244, 211, 94, 0.18);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+    color: #f3fff5;
+    background:
+      radial-gradient(1200px 600px at 20% -10%, #2e9d4c33, transparent),
+      radial-gradient(900px 500px at 100% 0%, #f4d35e22, transparent),
+      linear-gradient(160deg, #0c2c16, #08240f 55%, #06180b);
+    background-attachment: fixed;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 18px 14px 60px;
+    gap: 16px;
+  }
+
+  header.title {
+    text-align: center;
+    margin-top: 4px;
+  }
+  header.title h1 {
+    margin: 0;
+    font-size: clamp(28px, 6vw, 46px);
+    letter-spacing: 1px;
+    text-shadow: 0 2px 0 #06180b, 0 6px 18px #000a;
+  }
+  header.title .leafy { color: var(--leaf-light); }
+  header.title .sunny { color: var(--sun); }
+  header.title p {
+    margin: 6px 0 0;
+    opacity: 0.85;
+    font-size: 14px;
+  }
+
+  .panel {
+    width: min(720px, 100%);
+    background: var(--board-bg);
+    border: 1px solid #ffffff1a;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 18px 40px #0008, inset 0 1px 0 #ffffff14;
+    backdrop-filter: blur(3px);
+  }
+
+  /* ---- Setup ---- */
+  #setup h2 { margin: 0 0 12px; font-size: 20px; }
+  .players-count { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .pill {
+    flex: 1 1 0;
+    min-width: 64px;
+    padding: 12px;
+    text-align: center;
+    border-radius: 12px;
+    border: 1px solid #ffffff22;
+    background: var(--cell);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: transform .08s ease, background .15s ease, border-color .15s;
+  }
+  .pill:hover { transform: translateY(-2px); }
+  .pill.selected {
+    background: linear-gradient(180deg, var(--leaf-light), var(--leaf));
+    border-color: var(--sun);
+    box-shadow: 0 6px 16px #0006;
+  }
+
+  .seat-preview { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 16px; }
+  .seat {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 999px;
+    background: #00000033; border: 1px solid #ffffff1f;
+    font-weight: 600;
+  }
+  .seat .dot { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 0 0 2px #0006; }
+  .seat .name-input {
+    width: 120px;
+    max-width: 40vw;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 8px;
+    font: inherit;
+    font-weight: 600;
+    color: #08240f;
+    background: #f3fff5;
+    outline: 2px solid transparent;
+    transition: outline-color .15s;
+  }
+  .seat .name-input:focus { outline-color: var(--sun); }
+  .seat .name-input::placeholder { color: #08240f88; font-weight: 500; }
+  #difficultyRow { margin-top: 4px; }
+
+  .btn {
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+    color: #08240f;
+    background: linear-gradient(180deg, var(--sun), #e6b93b);
+    padding: 13px 22px;
+    border-radius: 12px;
+    box-shadow: 0 8px 18px #0007;
+    transition: transform .08s ease, filter .15s;
+  }
+  .btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+  .btn.ghost {
+    color: #f3fff5;
+    background: #ffffff14;
+    border: 1px solid #ffffff2a;
+    box-shadow: none;
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+
+  details.rules { margin-top: 14px; font-size: 14px; opacity: .92; }
+  details.rules summary { cursor: pointer; font-weight: 700; color: var(--sun); }
+  details.rules ul { margin: 8px 0 0; padding-left: 20px; line-height: 1.5; }
+
+  /* ---- Game ---- */
+  #game { display: none; flex-direction: column; align-items: center; gap: 16px; width: min(720px, 100%); }
+
+  .hud {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+    width: 100%;
+  }
+  .hud .seat { font-size: 14px; }
+  .hud .seat.active {
+    outline: 2px solid var(--sun);
+    box-shadow: 0 0 18px #f4d35e66;
+    background: #0000004d;
+  }
+  .hud .seat .count { opacity: .8; font-weight: 500; font-size: 12px; }
+
+  .turnbar {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    flex-wrap: wrap; text-align: center;
+  }
+  .turnbar .msg { font-size: 16px; min-height: 22px; }
+  .turnbar .msg b { color: var(--sun); }
+
+  .current-card-wrap { display: flex; align-items: center; gap: 12px; }
+  .current-card-wrap .label { font-size: 13px; opacity: .8; }
+
+  .card {
+    position: relative;
+    width: var(--cs, 56px);
+    height: var(--cs, 56px);
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    user-select: none;
+    box-shadow: inset 0 2px 0 #ffffff40, inset 0 -4px 8px #0004, 0 4px 8px #0005;
+  }
+  .card .num {
+    font-size: calc(var(--cs, 56px) * 0.42);
+    line-height: 1;
+    text-shadow: 0 1px 2px #0007;
+    color: #fff;
+  }
+  .card .ico {
+    position: absolute;
+    bottom: 2px; right: 4px;
+    font-size: calc(var(--cs, 56px) * 0.30);
+    filter: drop-shadow(0 1px 1px #0008);
+  }
+  .card.big { --cs: 74px; }
+
+  #boardWrap {
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    padding: 6px;
+  }
+  #board {
+    display: grid;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 16px;
+    background:
+      repeating-linear-gradient(45deg, #ffffff08 0 12px, #ffffff03 12px 24px),
+      #00000040;
+    border: 1px solid #ffffff1a;
+  }
+  .cell {
+    width: var(--cs, 56px);
+    height: var(--cs, 56px);
+    border-radius: 12px;
+    background: var(--cell);
+    border: 1px dashed #ffffff14;
+    display: grid;
+    place-items: center;
+  }
+  .cell.empty { border-style: dashed; }
+  .cell.valid {
+    background: var(--cell-valid);
+    border: 2px solid var(--sun);
+    cursor: pointer;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .cell.valid:hover { background: #f4d35e33; }
+  .cell.cover { cursor: pointer; }
+  .cell.cover .card { outline: 2px solid var(--sun); outline-offset: 1px; }
+  @keyframes pulse { 0%,100%{ box-shadow: 0 0 0 0 #f4d35e00;} 50%{ box-shadow: 0 0 14px 1px #f4d35e55;} }
+  .card.placed-now { animation: pop .28s ease; }
+  @keyframes pop { 0%{ transform: scale(.4) rotate(-8deg); } 100%{ transform: scale(1) rotate(0);} }
+
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+  /* ---- Banner ---- */
+  #banner {
+    position: fixed; inset: 0;
+    display: none; place-items: center;
+    background: #04140999;
+    backdrop-filter: blur(4px);
+    z-index: 50;
+    padding: 20px;
+  }
+  #banner .box {
+    background: linear-gradient(160deg, #1f6b34, #0c2c16);
+    border: 2px solid var(--sun);
+    border-radius: 20px;
+    padding: 28px 26px;
+    text-align: center;
+    max-width: 420px;
+    box-shadow: 0 20px 60px #000a;
+  }
+  #banner .box h2 { margin: 0 0 6px; font-size: 28px; }
+  #banner .box .who { font-size: 18px; margin-bottom: 16px; }
+  #banner .box .emoji { font-size: 54px; margin-bottom: 8px; }
+
+  footer { opacity: .6; font-size: 12px; text-align: center; }
+
+  @media (max-width: 480px) {
+    .card, .cell { --cs: 46px; }
+    .card.big { --cs: 60px; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="title">
+    <h1>🌴 Punto <span class="leafy">Jun</span><span class="sunny">gle</span> 🐾</h1>
+    <p>Aligne 4 de tes animaux pour régner sur la canopée.</p>
+  </header>
+
+  <!-- ===================== SETUP ===================== -->
+  <section id="setup" class="panel">
+    <h2>🦜 Préparez la partie</h2>
+
+    <div style="font-size:14px; margin-bottom:8px; opacity:.85;">Mode de jeu</div>
+    <div class="players-count" id="modePicker">
+      <div class="pill selected" data-mode="solo">🤖 Solo (vs&nbsp;bot)</div>
+      <div class="pill" data-mode="multi">👥 Entre&nbsp;amis</div>
+    </div>
+
+    <div style="font-size:14px; margin:14px 0 8px; opacity:.85;" id="countLabel">Nombre de joueurs (toi + bots)</div>
+    <div class="players-count" id="countPicker">
+      <div class="pill selected" data-n="2">2</div>
+      <div class="pill" data-n="3">3</div>
+      <div class="pill" data-n="4">4</div>
+    </div>
+
+    <div id="difficultyRow">
+      <div style="font-size:14px; margin:14px 0 8px; opacity:.85;">Difficulté du bot</div>
+      <div class="players-count" id="difficultyPicker">
+        <div class="pill" data-diff="facile">😴 Facile</div>
+        <div class="pill" data-diff="moyen">🙂 Moyen</div>
+        <div class="pill selected" data-diff="difficile">🔥 Difficile</div>
+      </div>
+    </div>
+
+    <div class="seat-preview" id="seatPreview"></div>
+
+    <button class="btn" id="startBtn">Lancer la partie 🚀</button>
+
+    <details class="rules">
+      <summary>📜 Règles du jeu</summary>
+      <ul>
+        <li>Chaque joueur incarne un animal et possède 18 cartes (les chiffres 1 à 9, deux fois chacun).</li>
+        <li>À ton tour, tu joues la carte du dessus de ton paquet (tu ne choisis pas le chiffre&nbsp;!).</li>
+        <li>Pose-la sur une case <b>vide adjacente</b> à une carte déjà posée…</li>
+        <li>…ou <b>par-dessus</b> une carte (à toi ou non) de valeur <b>strictement inférieure</b>.</li>
+        <li>La zone de jeu ne dépasse jamais <b>6×6</b> cases.</li>
+        <li>🏆 Le premier à aligner <b>4 cartes de sa couleur</b> (ligne, colonne ou diagonale) gagne&nbsp;!</li>
+        <li>Si toutes les cartes sont jouées sans alignement, c'est un match nul.</li>
+        <li>🤖 En <b>mode solo</b>, joue contre un ou plusieurs bots. Choisis leur niveau&nbsp;: <b>😴 Facile</b> (joue presque au hasard), <b>🙂 Moyen</b> (gagne et bloque), <b>🔥 Difficile</b> (crée des fourchettes et anticipe tes menaces).</li>
+      </ul>
+    </details>
+  </section>
+
+  <!-- ===================== GAME ===================== -->
+  <section id="game">
+    <div class="hud" id="hud"></div>
+
+    <div class="turnbar">
+      <div class="current-card-wrap">
+        <span class="label">À jouer :</span>
+        <div id="currentCard"></div>
+      </div>
+      <div class="msg" id="message"></div>
+    </div>
+
+    <div id="boardWrap"><div id="board"></div></div>
+
+    <div class="controls">
+      <button class="btn ghost" id="skipBtn" style="display:none;">Passer (aucun coup possible)</button>
+      <button class="btn ghost" id="restartBtn">↺ Nouvelle partie</button>
+    </div>
+  </section>
+
+  <!-- ===================== BANNER ===================== -->
+  <div id="banner">
+    <div class="box">
+      <div class="emoji" id="bannerEmoji">🏆</div>
+      <h2 id="bannerTitle">Victoire&nbsp;!</h2>
+      <div class="who" id="bannerWho"></div>
+      <button class="btn" id="bannerBtn">Rejouer</button>
+    </div>
+  </div>
+
+  <footer>Punto Jungle — fan-made • un kata maison 🌿</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  // ----- Jungle "colors" (animals) -----
+  const ANIMALS = [
+    { key: "tiger",  name: "Tigre",   icon: "🐯", color: "#e8821f", grad: "linear-gradient(180deg,#ffae4d,#d9690d)" },
+    { key: "parrot", name: "Perroquet", icon: "🦜", color: "#e23b3b", grad: "linear-gradient(180deg,#ff5d5d,#c41e1e)" },
+    { key: "snake",  name: "Serpent", icon: "🐍", color: "#2e9d4c", grad: "linear-gradient(180deg,#4fd277,#1f7a37)" },
+    { key: "toucan", name: "Toucan",  icon: "🐧", color: "#3a7bd5", grad: "linear-gradient(180deg,#5fa0ff,#235fb0)" },
+    // toucan uses a bird glyph fallback; replaced below
+  ];
+  ANIMALS[3].icon = "🦩"; // flamingo as the 4th jungle critter (blue-ish flamingo themed by color)
+  ANIMALS[3].name = "Flamant";
+
+  const SIZE_LIMIT = 6;     // max bounding box (6x6)
+  const GRID = 13;          // internal grid, first card at center
+  const CENTER = Math.floor(GRID / 2);
+
+  // ----- State -----
+  let state = null;
+
+  // ----- DOM -----
+  const $ = (id) => document.getElementById(id);
+  const setupEl = $("setup");
+  const gameEl = $("game");
+  const boardEl = $("board");
+  const hudEl = $("hud");
+  const msgEl = $("message");
+  const curCardEl = $("currentCard");
+  const seatPreviewEl = $("seatPreview");
+  const bannerEl = $("banner");
+
+  let playerCount = 2;
+  let mode = "solo"; // "solo" | "multi"
+  let difficulty = "difficile"; // "facile" | "moyen" | "difficile"
+  const playerNames = []; // custom names typed in setup, keyed by seat index
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, ch => (
+      { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]
+    ));
+  }
+
+  // Name actually shown for a seat: custom name if typed, else a sensible default.
+  function seatName(i) {
+    const typed = (playerNames[i] || "").trim();
+    if (typed) return typed;
+    if (seatIsBot(i)) return ANIMALS[i].name;
+    return mode === "solo" ? "Toi" : ANIMALS[i].name;
+  }
+
+  const BOT_DELAY = 700; // ms before a bot plays, so the move is readable
+
+  // ---------- Setup UI ----------
+  function seatIsBot(i) { return mode === "solo" && i > 0; }
+
+  function renderSeatPreview() {
+    seatPreviewEl.innerHTML = "";
+    for (let i = 0; i < playerCount; i++) {
+      const a = ANIMALS[i];
+      const bot = seatIsBot(i);
+      const seat = document.createElement("div");
+      seat.className = "seat";
+      if (bot) {
+        seat.innerHTML = `<span class="dot" style="background:${a.color}"></span><span>${a.icon} ${a.name} 🤖</span>`;
+      } else {
+        const placeholder = mode === "solo" ? "Ton nom" : a.name;
+        const val = escapeHtml(playerNames[i] || "");
+        seat.innerHTML = `<span class="dot" style="background:${a.color}"></span>
+          <span>${a.icon}</span>
+          <input type="text" class="name-input" maxlength="14" data-seat="${i}"
+                 placeholder="${escapeHtml(placeholder)}" value="${val}" aria-label="Nom du joueur ${i + 1}" />`;
+      }
+      seatPreviewEl.appendChild(seat);
+    }
+  }
+
+  seatPreviewEl.addEventListener("input", (e) => {
+    const input = e.target.closest(".name-input");
+    if (!input) return;
+    playerNames[parseInt(input.dataset.seat, 10)] = input.value;
+  });
+
+  function updateCountLabel() {
+    $("countLabel").textContent = mode === "solo"
+      ? "Nombre de joueurs (toi + bots)"
+      : "Nombre de joueurs";
+    $("difficultyRow").style.display = mode === "solo" ? "block" : "none";
+  }
+
+  $("modePicker").addEventListener("click", (e) => {
+    const pill = e.target.closest(".pill");
+    if (!pill) return;
+    mode = pill.dataset.mode;
+    document.querySelectorAll("#modePicker .pill").forEach(p => p.classList.remove("selected"));
+    pill.classList.add("selected");
+    updateCountLabel();
+    renderSeatPreview();
+  });
+
+  $("countPicker").addEventListener("click", (e) => {
+    const pill = e.target.closest(".pill");
+    if (!pill) return;
+    playerCount = parseInt(pill.dataset.n, 10);
+    document.querySelectorAll("#countPicker .pill").forEach(p => p.classList.remove("selected"));
+    pill.classList.add("selected");
+    renderSeatPreview();
+  });
+
+  $("difficultyPicker").addEventListener("click", (e) => {
+    const pill = e.target.closest(".pill");
+    if (!pill) return;
+    difficulty = pill.dataset.diff;
+    document.querySelectorAll("#difficultyPicker .pill").forEach(p => p.classList.remove("selected"));
+    pill.classList.add("selected");
+  });
+
+  $("startBtn").addEventListener("click", startGame);
+  $("restartBtn").addEventListener("click", backToSetup);
+  $("bannerBtn").addEventListener("click", () => { bannerEl.style.display = "none"; backToSetup(); });
+  $("skipBtn").addEventListener("click", skipTurn);
+
+  function backToSetup() {
+    bannerEl.style.display = "none";
+    gameEl.style.display = "none";
+    setupEl.style.display = "block";
+  }
+
+  // ---------- Game setup ----------
+  function shuffledDeck() {
+    const deck = [];
+    for (let n = 1; n <= 9; n++) { deck.push(n); deck.push(n); } // 1..9 twice = 18
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+    return deck;
+  }
+
+  function startGame() {
+    const players = [];
+    for (let i = 0; i < playerCount; i++) {
+      players.push({
+        idx: i,
+        animal: ANIMALS[i],
+        deck: shuffledDeck(),
+        isBot: seatIsBot(i),
+        name: seatName(i),
+      });
+    }
+    // grid[r][c] = { owner: playerIdx, value } | null  (top card only)
+    const grid = Array.from({ length: GRID }, () => Array(GRID).fill(null));
+
+    state = {
+      players,
+      grid,
+      current: 0,
+      placedCount: 0,
+      currentCard: null, // {owner,value}
+      finished: false,
+      lastPlaced: null,
+      difficulty: difficulty,
+    };
+
+    setupEl.style.display = "none";
+    gameEl.style.display = "flex";
+
+    drawCardForCurrent();
+    render();
+    maybeScheduleBot();
+  }
+
+  function activePlayer() { return state.players[state.current]; }
+
+  function playerLabel(p) {
+    const name = escapeHtml(p.name);
+    if (p.isBot) return `${p.animal.icon} ${name} 🤖`;
+    return `${p.animal.icon} ${name}`;
+  }
+
+  function drawCardForCurrent() {
+    const p = activePlayer();
+    if (p.deck.length === 0) { state.currentCard = null; return; }
+    state.currentCard = { owner: p.idx, value: p.deck[p.deck.length - 1] };
+  }
+
+  // ---------- Board geometry ----------
+  function occupiedCells() {
+    const cells = [];
+    for (let r = 0; r < GRID; r++)
+      for (let c = 0; c < GRID; c++)
+        if (state.grid[r][c]) cells.push([r, c]);
+    return cells;
+  }
+
+  function bounds() {
+    const occ = occupiedCells();
+    if (occ.length === 0) return null;
+    let minR = Infinity, maxR = -Infinity, minC = Infinity, maxC = -Infinity;
+    for (const [r, c] of occ) {
+      minR = Math.min(minR, r); maxR = Math.max(maxR, r);
+      minC = Math.min(minC, c); maxC = Math.max(maxC, c);
+    }
+    return { minR, maxR, minC, maxC };
+  }
+
+  function isAdjacentToOccupied(r, c) {
+    for (let dr = -1; dr <= 1; dr++)
+      for (let dc = -1; dc <= 1; dc++) {
+        if (dr === 0 && dc === 0) continue;
+        const nr = r + dr, nc = c + dc;
+        if (nr < 0 || nc < 0 || nr >= GRID || nc >= GRID) continue;
+        if (state.grid[nr][nc]) return true;
+      }
+    return false;
+  }
+
+  // Would placing on empty cell (r,c) keep bounding box <= 6x6 ?
+  function withinSizeLimit(r, c) {
+    const b = bounds();
+    if (!b) return true; // first card
+    const minR = Math.min(b.minR, r), maxR = Math.max(b.maxR, r);
+    const minC = Math.min(b.minC, c), maxC = Math.max(b.maxC, c);
+    return (maxR - minR) < SIZE_LIMIT && (maxC - minC) < SIZE_LIMIT;
+  }
+
+  function isValidPlacement(r, c) {
+    if (!state.currentCard) return false;
+    const target = state.grid[r][c];
+    const b = bounds();
+    if (!b) {
+      // first card anywhere central
+      return r === CENTER && c === CENTER;
+    }
+    if (target) {
+      // cover only if strictly higher value
+      return state.currentCard.value > target.value;
+    }
+    // empty cell: must be adjacent AND keep size within limit
+    return isAdjacentToOccupied(r, c) && withinSizeLimit(r, c);
+  }
+
+  function hasAnyValidMove() {
+    // check covers + empties within current frame
+    for (let r = 0; r < GRID; r++)
+      for (let c = 0; c < GRID; c++)
+        if (isValidPlacement(r, c)) return true;
+    return false;
+  }
+
+  // ---------- Win detection ----------
+  function checkWin(owner) {
+    const DIRS = [[0,1],[1,0],[1,1],[1,-1]];
+    for (let r = 0; r < GRID; r++) {
+      for (let c = 0; c < GRID; c++) {
+        const cell = state.grid[r][c];
+        if (!cell || cell.owner !== owner) continue;
+        for (const [dr, dc] of DIRS) {
+          const line = [[r, c]];
+          let nr = r + dr, nc = c + dc;
+          while (nr >= 0 && nc >= 0 && nr < GRID && nc < GRID &&
+                 state.grid[nr][nc] && state.grid[nr][nc].owner === owner) {
+            line.push([nr, nc]);
+            if (line.length >= 4) return line.slice(0, 4);
+            nr += dr; nc += dc;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  function anyDeckLeft() {
+    return state.players.some(p => p.deck.length > 0);
+  }
+
+  // ---------- Move handling ----------
+  function placeAt(r, c) {
+    if (state.finished || !isValidPlacement(r, c)) return;
+    const p = activePlayer();
+    const card = { owner: p.idx, value: state.currentCard.value };
+    state.grid[r][c] = card;
+    p.deck.pop();
+    state.placedCount++;
+    state.lastPlaced = [r, c];
+
+    const winLine = checkWin(p.idx);
+    if (winLine) {
+      state.finished = true;
+      render(winLine);
+      showBanner(p, false);
+      return;
+    }
+
+    if (!anyDeckLeft()) {
+      state.finished = true;
+      render();
+      showBanner(null, true);
+      return;
+    }
+
+    advanceTurn();
+    render();
+    maybeScheduleBot();
+  }
+
+  function advanceTurn() {
+    // move to next player who still has cards
+    for (let i = 1; i <= state.players.length; i++) {
+      const idx = (state.current + i) % state.players.length;
+      if (state.players[idx].deck.length > 0) {
+        state.current = idx;
+        drawCardForCurrent();
+        return;
+      }
+    }
+    state.currentCard = null;
+  }
+
+  function skipTurn() {
+    if (state.finished) return;
+    advanceTurn();
+    render();
+    maybeScheduleBot();
+  }
+
+  // ---------- Bot (IA) ----------
+  // Count consecutive cells owned by `owner` stepping (dr,dc) from the cell
+  // just after (r,c). Does NOT count (r,c) itself.
+  function runLen(r, c, dr, dc, owner) {
+    let n = 0, nr = r + dr, nc = c + dc;
+    while (nr >= 0 && nc >= 0 && nr < GRID && nc < GRID &&
+           state.grid[nr][nc] && state.grid[nr][nc].owner === owner) {
+      n++; nr += dr; nc += dc;
+    }
+    return n;
+  }
+
+  // If `owner` placed a card on the (currently empty) cell (r,c),
+  // would that make 4+ in a row?
+  function completesFour(r, c, owner) {
+    const DIRS = [[0,1],[1,0],[1,1],[1,-1]];
+    for (const [dr, dc] of DIRS) {
+      const total = 1 + runLen(r, c, dr, dc, owner) + runLen(r, c, -dr, -dc, owner);
+      if (total >= 4) return true;
+    }
+    return false;
+  }
+
+  // Empty cells where some OTHER player could complete 4-in-a-row right now.
+  function computeThreatCells(me) {
+    const threats = new Set();
+    for (let r = 0; r < GRID; r++) {
+      for (let c = 0; c < GRID; c++) {
+        if (state.grid[r][c]) continue;
+        if (!isAdjacentToOccupied(r, c) || !withinSizeLimit(r, c)) continue;
+        for (const p of state.players) {
+          if (p.idx === me || p.deck.length === 0) continue;
+          if (completesFour(r, c, p.idx)) { threats.add(r + "," + c); break; }
+        }
+      }
+    }
+    return threats;
+  }
+
+  function runWeight(total) {
+    if (total >= 4) return 100000;
+    if (total === 3) return 45;
+    if (total === 2) return 9;
+    return 1;
+  }
+
+  // Could a card be legally dropped on the (empty) cell (r,c) on a future turn?
+  function cellExtensible(r, c) {
+    if (r < 0 || c < 0 || r >= GRID || c >= GRID) return false;
+    if (state.grid[r][c]) return false;
+    return isAdjacentToOccupied(r, c) && withinSizeLimit(r, c);
+  }
+
+  // Does dropping our card at (r,c) make 4-in-a-row right now?
+  function isWinningMove(r, c, me, val) {
+    const prev = state.grid[r][c];
+    state.grid[r][c] = { owner: me, value: val };
+    let win = false;
+    const DIRS = [[0,1],[1,0],[1,1],[1,-1]];
+    for (const [dr, dc] of DIRS) {
+      if (1 + runLen(r, c, dr, dc, me) + runLen(r, c, -dr, -dc, me) >= 4) { win = true; break; }
+    }
+    state.grid[r][c] = prev;
+    return win;
+  }
+
+  // After our card sits at (r,c): how many directions form a run of 3 that can
+  // still be extended to 4 (an "open three"). Two of them = an unstoppable fork.
+  function openThreeForks(r, c, owner) {
+    const DIRS = [[0,1],[1,0],[1,1],[1,-1]];
+    let forks = 0;
+    for (const [dr, dc] of DIRS) {
+      const f = runLen(r, c, dr, dc, owner);
+      const b = runLen(r, c, -dr, -dc, owner);
+      if (1 + f + b !== 3) continue;
+      const aheadR = r + (f + 1) * dr, aheadC = c + (f + 1) * dc;
+      const behindR = r - (b + 1) * dr, behindC = c - (b + 1) * dc;
+      if (cellExtensible(aheadR, aheadC) || cellExtensible(behindR, behindC)) forks++;
+    }
+    return forks;
+  }
+
+  // Number of distinct empty cells where an opponent could win on their turn.
+  function countOpponentThreats(me) {
+    return computeThreatCells(me).size;
+  }
+
+  // Score a candidate placement of the current card at (r,c) for player `me`.
+  function evaluateBotMove(r, c, me, val, threatCells) {
+    let score = 0;
+    const prev = state.grid[r][c];
+
+    // Blocking an opponent's imminent win on an empty cell is very valuable.
+    if (!prev && threatCells.has(r + "," + c)) score += 8000;
+
+    // Simulate placing our card.
+    state.grid[r][c] = { owner: me, value: val };
+
+    const DIRS = [[0,1],[1,0],[1,1],[1,-1]];
+    let bestRun = 1;
+    for (const [dr, dc] of DIRS) {
+      const total = 1 + runLen(r, c, dr, dc, me) + runLen(r, c, -dr, -dc, me);
+      bestRun = Math.max(bestRun, total);
+      score += runWeight(total);
+    }
+    if (bestRun >= 4) score += 100000; // winning move
+
+    state.grid[r][c] = prev;
+
+    // Covering an opponent card removes one of their pieces — mildly useful,
+    // more so when we spend a high card on a high opponent card.
+    if (prev && prev.owner !== me) score += 6 + prev.value * 0.5;
+
+    // Slight preference to stay central (keeps future options open).
+    const b = bounds();
+    if (b) {
+      const midR = (b.minR + b.maxR) / 2, midC = (b.minC + b.maxC) / 2;
+      score -= (Math.abs(r - midR) + Math.abs(c - midC)) * 0.15;
+    }
+    return score;
+  }
+
+  // Strong evaluator: greedy base + fork creation + defensive look-ahead.
+  function evaluateBotMoveHard(r, c, me, val, threatCells) {
+    let score = evaluateBotMove(r, c, me, val, threatCells);
+
+    const prev = state.grid[r][c];
+    state.grid[r][c] = { owner: me, value: val };
+
+    // Forks: a single open three forces a block; two at once usually wins.
+    const forks = openThreeForks(r, c, me);
+    if (forks >= 2) score += 6000;
+    else if (forks === 1) score += 160;
+
+    // Defensive look-ahead: how many winning cells do opponents still have
+    // AFTER our move? Each unblocked threat means we likely lose next turn.
+    const remaining = countOpponentThreats(me);
+    score -= remaining * 9000;
+
+    state.grid[r][c] = prev;
+    return score;
+  }
+
+  function chooseBotMove(moves, me, val) {
+    const diff = state.difficulty || "moyen";
+
+    // Facile: basically random, but won't fumble an obvious immediate win.
+    if (diff === "facile") {
+      const wins = moves.filter(([r, c]) => isWinningMove(r, c, me, val));
+      if (wins.length && Math.random() < 0.5) {
+        return wins[Math.floor(Math.random() * wins.length)];
+      }
+      return moves[Math.floor(Math.random() * moves.length)];
+    }
+
+    const threatCells = computeThreatCells(me);
+    const evalFn = diff === "difficile" ? evaluateBotMoveHard : evaluateBotMove;
+
+    let best = moves[0], bestScore = -Infinity;
+    for (const [r, c] of moves) {
+      const s = evalFn(r, c, me, val, threatCells) + Math.random() * 0.5;
+      if (s > bestScore) { bestScore = s; best = [r, c]; }
+    }
+    return best;
+  }
+
+  function botMove() {
+    if (!state || state.finished) return;
+    const me = state.current;
+    const p = state.players[me];
+    if (!p.isBot) return;
+
+    // Gather legal moves.
+    const moves = [];
+    for (let r = 0; r < GRID; r++)
+      for (let c = 0; c < GRID; c++)
+        if (isValidPlacement(r, c)) moves.push([r, c]);
+
+    if (!state.currentCard || moves.length === 0) {
+      advanceTurn();
+      render();
+      maybeScheduleBot();
+      return;
+    }
+
+    const val = state.currentCard.value;
+    const best = chooseBotMove(moves, me, val);
+    placeAt(best[0], best[1]); // handles win/draw/advance + reschedules bots
+  }
+
+  function maybeScheduleBot() {
+    if (!state || state.finished) return;
+    if (activePlayer().isBot) {
+      render(); // refresh message ("le bot réfléchit…") and lock the board
+      setTimeout(botMove, BOT_DELAY);
+    }
+  }
+
+  // ---------- Rendering ----------
+  function cardNode(card, extraClass = "") {
+    const a = ANIMALS[card.owner];
+    const el = document.createElement("div");
+    el.className = "card " + extraClass;
+    el.style.background = a.grad;
+    el.innerHTML = `<span class="num">${card.value}</span><span class="ico">${a.icon}</span>`;
+    return el;
+  }
+
+  function render(winLine = null) {
+    renderHUD();
+    renderCurrentCard();
+    renderBoard(winLine);
+    renderMessage();
+    renderSkip();
+  }
+
+  function renderHUD() {
+    hudEl.innerHTML = "";
+    state.players.forEach((p) => {
+      const a = p.animal;
+      const seat = document.createElement("div");
+      seat.className = "seat" + (p.idx === state.current && !state.finished ? " active" : "");
+      seat.innerHTML = `<span class="dot" style="background:${a.color}"></span>
+        <span>${playerLabel(p)}</span>
+        <span class="count">· ${p.deck.length} 🃏</span>`;
+      hudEl.appendChild(seat);
+    });
+  }
+
+  function renderCurrentCard() {
+    curCardEl.innerHTML = "";
+    if (state.currentCard) {
+      curCardEl.appendChild(cardNode(state.currentCard, "big"));
+    }
+  }
+
+  function renderBoard(winLine = null) {
+    const winSet = new Set((winLine || []).map(([r, c]) => r + "," + c));
+    const b = bounds();
+    const locked = state.finished || activePlayer().isBot; // no human input on bot turns
+
+    // Determine the window to render.
+    let r0, r1, c0, c1;
+    if (!b) {
+      r0 = CENTER; r1 = CENTER; c0 = CENTER; c1 = CENTER;
+    } else {
+      r0 = b.minR - 1; r1 = b.maxR + 1;
+      c0 = b.minC - 1; c1 = b.maxC + 1;
+    }
+    r0 = Math.max(0, r0); c0 = Math.max(0, c0);
+    r1 = Math.min(GRID - 1, r1); c1 = Math.min(GRID - 1, c1);
+
+    const cols = c1 - c0 + 1;
+    boardEl.style.gridTemplateColumns = `repeat(${cols}, var(--cs, 56px))`;
+    boardEl.innerHTML = "";
+
+    for (let r = r0; r <= r1; r++) {
+      for (let c = c0; c <= c1; c++) {
+        const cellEl = document.createElement("div");
+        cellEl.className = "cell";
+        const card = state.grid[r][c];
+        const valid = !locked && isValidPlacement(r, c);
+
+        if (card) {
+          const isLast = state.lastPlaced && state.lastPlaced[0] === r && state.lastPlaced[1] === c;
+          const extra = (isLast ? "placed-now " : "") + (winSet.has(r + "," + c) ? "win" : "");
+          const cn = cardNode(card, extra.trim());
+          if (winSet.has(r + "," + c)) {
+            cn.style.outline = "3px solid #fff";
+            cn.style.outlineOffset = "2px";
+          }
+          cellEl.appendChild(cn);
+          if (valid) cellEl.classList.add("cover");
+        } else {
+          cellEl.classList.add("empty");
+        }
+
+        if (valid) {
+          cellEl.classList.add("valid");
+          cellEl.addEventListener("click", () => placeAt(r, c));
+        }
+        boardEl.appendChild(cellEl);
+      }
+    }
+  }
+
+  function renderMessage() {
+    if (state.finished) { msgEl.innerHTML = ""; return; }
+    const p = activePlayer();
+    const label = playerLabel(p);
+    if (p.isBot) {
+      const diffLabel = { facile: "facile", moyen: "moyen", difficile: "difficile" }[state.difficulty] || "";
+      msgEl.innerHTML = `<b>${label}</b> <span style="opacity:.7">(${diffLabel})</span> réfléchit… 🌿`;
+      return;
+    }
+    if (!state.currentCard) {
+      msgEl.innerHTML = `<b>${label}</b> n'a plus de cartes.`;
+      return;
+    }
+    if (!hasAnyValidMove()) {
+      msgEl.innerHTML = `Au tour de <b>${label}</b> — aucun coup possible, passe ton tour.`;
+    } else {
+      msgEl.innerHTML = `Au tour de <b>${label}</b> — pose ta carte sur une case surlignée.`;
+    }
+  }
+
+  function renderSkip() {
+    const p = state.finished ? null : activePlayer();
+    const show = p && !p.isBot && state.currentCard && !hasAnyValidMove();
+    $("skipBtn").style.display = show ? "inline-block" : "none";
+  }
+
+  function showBanner(player, draw) {
+    setTimeout(() => {
+      if (draw) {
+        $("bannerEmoji").textContent = "🤝";
+        $("bannerTitle").textContent = "Match nul !";
+        $("bannerWho").textContent = "Toutes les cartes sont jouées, la jungle reste partagée.";
+      } else {
+        const a = player.animal;
+        $("bannerEmoji").textContent = a.icon;
+        const human = !player.isBot && mode === "solo";
+        // "Tu alignes" only when the solo human kept the default name; otherwise
+        // address the player by the name they entered.
+        const useSecondPerson = human && player.name === "Toi";
+        $("bannerTitle").textContent = human ? "Bravo, victoire !"
+                                     : (player.isBot ? "Le bot l'emporte…" : "Victoire !");
+        const who = useSecondPerson ? "Tu"
+                  : (player.isBot ? `${escapeHtml(player.name)} 🤖` : escapeHtml(player.name));
+        const verb = useSecondPerson ? "alignes" : "aligne";
+        $("bannerWho").innerHTML = `<b>${who}</b> ${verb} 4 cartes et règne sur la canopée ! 🌴`;
+      }
+      bannerEl.style.display = "grid";
+    }, 450);
+  }
+
+  // init
+  updateCountLabel();
+  renderSeatPreview();
+})();
+</script>
+</body>
+</html>

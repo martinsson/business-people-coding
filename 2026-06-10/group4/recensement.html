@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recensement de la population</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #38bdf8;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --danger: #f87171;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1e293b, var(--bg));
+      color: var(--text);
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 { margin: 0 0 0.25rem; font-size: 2rem; }
+    .subtitle { color: var(--muted); margin: 0 0 2rem; }
+    a.back { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+    a.back:hover { text-decoration: underline; }
+    .card {
+      background: var(--card);
+      padding: 1.5rem;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      margin-bottom: 1.5rem;
+    }
+    .card h2 { margin: 0 0 1rem; font-size: 1.15rem; }
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      align-items: end;
+    }
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    label { font-size: 0.85rem; color: var(--muted); }
+    input, select {
+      background: #0f172a;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.6rem 0.75rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      outline: none;
+      width: 100%;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    input[readonly] { opacity: 0.6; cursor: default; }
+    button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 0.65rem 1.3rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.1s ease, filter 0.1s ease;
+    }
+    button:hover { filter: brightness(1.1); }
+    button:active { transform: scale(0.97); }
+    .stats { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .stat {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      flex: 1;
+      min-width: 130px;
+      text-align: center;
+    }
+    .stat .value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+    .stat .label { color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--border); font-size: 0.92rem; }
+    th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    tr:last-child td { border-bottom: none; }
+    .empty { color: var(--muted); text-align: center; padding: 2rem 0; }
+    .del-btn {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .del-btn:hover { border-color: var(--danger); filter: none; }
+    .table-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+    .table-wrap { overflow-x: auto; }
+    .ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); font-weight: 400; font-size: 0.85rem; padding: 0.4rem 0.8rem; }
+    .ghost:hover { color: var(--danger); border-color: var(--danger); }
+    .edit-btn { background: transparent; color: var(--accent); border: 1px solid var(--border); padding: 0.3rem 0.6rem; font-size: 0.8rem; font-weight: 500; margin-right: 0.35rem; }
+    .edit-btn:hover { border-color: var(--accent); filter: none; }
+    .form-editing { border: 1px solid var(--accent); }
+    .hidden { display: none; }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+    }
+    .filters .field { flex: 1; min-width: 150px; }
+    .filters .field.short { max-width: 120px; }
+    .reset-link {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 0.4rem 0;
+      text-decoration: underline;
+      align-self: flex-end;
+    }
+    .reset-link:hover { color: var(--text); filter: none; }
+    .result-count { color: var(--muted); font-size: 0.85rem; }
+    mark { background: rgba(56, 189, 248, 0.25); color: var(--accent); border-radius: 2px; }
+    .autocomplete-wrap { position: relative; }
+    .autocomplete-list {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      z-index: 200;
+      list-style: none;
+      margin: 0; padding: 0.25rem 0;
+      max-height: 220px;
+      overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+    .autocomplete-list li {
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+    .autocomplete-list li:hover,
+    .autocomplete-list li.ac-active {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">&larr; Retour à l'accueil</a>
+    <h1>Recensement de la population</h1>
+    <p class="subtitle">Enregistrez et consultez les habitants. Les données sont stockées localement dans votre navigateur.</p>
+
+    <div class="card">
+      <h2>Ajouter une personne</h2>
+      <form id="person-form">
+        <div class="field">
+          <label for="firstName">Prénom</label>
+          <input id="firstName" type="text" maxlength="40" required>
+        </div>
+        <div class="field">
+          <label for="lastName">Nom</label>
+          <input id="lastName" type="text" maxlength="40" required aria-describedby="dup-error">
+          <span id="dup-error" style="color:var(--danger);font-size:0.8rem;margin-top:0.2rem;display:none">Cette personne est déjà recensée.</span>
+        </div>
+        <div class="field">
+          <label for="dob">Date de naissance</label>
+          <input id="dob" type="date" max="" required aria-describedby="dob-error">
+          <span id="dob-error" style="color:var(--danger);font-size:0.8rem;margin-top:0.2rem;display:none">La personne doit avoir au moins 18 ans.</span>
+        </div>
+        <div class="field">
+          <label for="age">Âge</label>
+          <input id="age" type="number" min="0" max="130" readonly>
+        </div>
+        <div class="field">
+          <label for="civil">État civil</label>
+          <select id="civil">
+            <option value="">—</option>
+            <option value="Célibataire">Célibataire</option>
+            <option value="Marié(e)">Marié(e)</option>
+            <option value="En union civile">En union civile</option>
+            <option value="Divorcé(e)">Divorcé(e)</option>
+            <option value="Séparé(e)">Séparé(e)</option>
+            <option value="Veuf / Veuve">Veuf / Veuve</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="sex">Sexe</label>
+          <select id="sex">
+            <option value="">—</option>
+            <option value="Femme">Femme</option>
+            <option value="Homme">Homme</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="city">Ville / Adresse</label>
+          <div class="autocomplete-wrap">
+            <input id="city" type="text" maxlength="120" autocomplete="off" placeholder="Commencez à taper…">
+            <ul class="autocomplete-list hidden" id="city-suggestions" role="listbox"></ul>
+          </div>
+        </div>
+        <div class="field">
+          <label for="job">Profession</label>
+          <input id="job" type="text" maxlength="60" list="professions-list" autocomplete="off">
+        </div>
+        <div class="field" style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <button type="submit" id="submit-btn">Ajouter</button>
+          <button type="button" id="cancel-edit-btn" class="ghost" style="display:none">Annuler</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="card">
+      <h2 style="margin:0 0 1rem">Recherche &amp; filtres</h2>
+      <div class="filters">
+        <div class="field">
+          <label for="search">Recherche libre</label>
+          <input id="search" type="search" placeholder="Nom, ville, profession…">
+        </div>
+        <div class="field short">
+          <label for="filter-sex">Sexe</label>
+          <select id="filter-sex">
+            <option value="">Tous</option>
+            <option value="Femme">Femme</option>
+            <option value="Homme">Homme</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+        <div class="field short">
+          <label for="age-min">Âge min</label>
+          <input id="age-min" type="number" min="0" max="130" placeholder="0">
+        </div>
+        <div class="field short">
+          <label for="age-max">Âge max</label>
+          <input id="age-max" type="number" min="0" max="130" placeholder="130">
+        </div>
+        <button class="reset-link" id="reset-filters">Réinitialiser</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-head">
+        <h2 style="margin:0">Population recensée <span class="result-count" id="result-count"></span></h2>
+        <button class="ghost" id="clear-btn">Tout effacer</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Prénom</th>
+              <th>Nom</th>
+              <th>Date de naissance</th>
+              <th>Âge</th>
+              <th>État civil</th>
+              <th>Sexe</th>
+              <th>Ville / Adresse</th>
+              <th>Profession</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+      <div class="empty hidden" id="empty-msg">Aucune personne recensée pour le moment.</div>
+    </div>
+  </div>
+
+  <datalist id="professions-list">
+    <!-- Santé -->
+    <option value="Médecin généraliste">
+    <option value="Médecin spécialiste">
+    <option value="Infirmier / Infirmière">
+    <option value="Pharmacien / Pharmacienne">
+    <option value="Dentiste">
+    <option value="Kinésithérapeute">
+    <option value="Psychologue">
+    <option value="Psychothérapeute">
+    <option value="Vétérinaire">
+    <option value="Aide-soignant / Aide-soignante">
+    <!-- Éducation -->
+    <option value="Enseignant / Enseignante">
+    <option value="Professeur / Professeure">
+    <option value="Éducateur / Éducatrice">
+    <option value="Assistant / Assistante social(e)">
+    <option value="Étudiant / Étudiante">
+    <!-- Ingénierie & technique -->
+    <option value="Ingénieur / Ingénieure">
+    <option value="Technicien / Technicienne">
+    <option value="Développeur / Développeuse informatique">
+    <option value="Architecte">
+    <option value="Électricien / Électricienne">
+    <option value="Plombier / Plombière">
+    <option value="Menuisier / Menuisière">
+    <option value="Maçon / Maçonne">
+    <option value="Mécanicien / Mécanicienne">
+    <!-- Gestion & finance -->
+    <option value="Comptable">
+    <option value="Analyste financier / Analyste financière">
+    <option value="Directeur / Directrice">
+    <option value="Chef de projet">
+    <option value="Consultant / Consultante">
+    <option value="Employé de banque">
+    <option value="Gestionnaire RH">
+    <option value="Manager">
+    <!-- Droit & administration -->
+    <option value="Avocat / Avocate">
+    <option value="Notaire">
+    <option value="Fonctionnaire">
+    <option value="Secrétaire">
+    <option value="Assistant administratif / Assistante administrative">
+    <!-- Commerce & services -->
+    <option value="Commercial / Commerciale">
+    <option value="Employé de commerce">
+    <option value="Vendeur / Vendeuse">
+    <option value="Agent immobilier / Agente immobilière">
+    <option value="Chauffeur / Chauffeuse">
+    <option value="Logisticien / Logisticienne">
+    <!-- Arts, médias & communication -->
+    <option value="Graphiste">
+    <option value="Designer">
+    <option value="Journaliste">
+    <option value="Photographe">
+    <option value="Traducteur / Traductrice">
+    <option value="Communicant / Communicante">
+    <!-- Artisanat & restauration -->
+    <option value="Cuisinier / Cuisinière">
+    <option value="Boulanger / Boulangère">
+    <option value="Coiffeur / Coiffeuse">
+    <option value="Serveur / Serveuse">
+    <option value="Agriculteur / Agricultrice">
+    <!-- Sécurité & défense -->
+    <option value="Policier / Policière">
+    <option value="Pompier / Pompière">
+    <option value="Agent de sécurité">
+    <option value="Militaire">
+    <!-- Autres -->
+    <option value="Retraité / Retraitée">
+    <option value="Sans emploi">
+    <option value="Indépendant / Indépendante">
+  </datalist>
+
+  <script>
+    const STORAGE_KEY = "recensement:people";
+
+    const form = document.getElementById("person-form");
+    const tableBody = document.getElementById("table-body");
+    const emptyMsg = document.getElementById("empty-msg");
+    const statsEl = document.getElementById("stats");
+    const clearBtn = document.getElementById("clear-btn");
+    const resultCount = document.getElementById("result-count");
+    const searchInput = document.getElementById("search");
+    const filterSex = document.getElementById("filter-sex");
+    const ageMin = document.getElementById("age-min");
+    const ageMax = document.getElementById("age-max");
+    const resetFiltersBtn = document.getElementById("reset-filters");
+
+    const fields = {
+      firstName: document.getElementById("firstName"),
+      lastName: document.getElementById("lastName"),
+      dob: document.getElementById("dob"),
+      age: document.getElementById("age"),
+      civil: document.getElementById("civil"),
+      sex: document.getElementById("sex"),
+      city: document.getElementById("city"),
+      job: document.getElementById("job"),
+    };
+
+    // Limite le calendrier à la date maximale pour avoir 18 ans révolus
+    const maxDob = new Date();
+    maxDob.setFullYear(maxDob.getFullYear() - 18);
+    fields.dob.max = maxDob.toISOString().slice(0, 10);
+
+    function calcAge(dob) {
+      if (!dob) return null;
+      const today = new Date();
+      const birth = new Date(dob);
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      return age >= 0 ? age : 0;
+    }
+
+    function formatDob(dob) {
+      if (!dob) return "—";
+      const [y, m, d] = dob.split("-");
+      return `${d}.${m}.${y}`;
+    }
+
+    const dobError = document.getElementById("dob-error");
+    const dupError = document.getElementById("dup-error");
+    const submitBtn = document.getElementById("submit-btn");
+    const cancelEditBtn = document.getElementById("cancel-edit-btn");
+
+    let editingId = null;
+
+    function resetForm() {
+      form.reset();
+      closeSuggestions();
+      editingId = null;
+      submitBtn.textContent = "Ajouter";
+      cancelEditBtn.style.display = "none";
+      form.classList.remove("form-editing");
+      dobError.style.display = "none";
+      dupError.style.display = "none";
+      fields.firstName.focus();
+    }
+
+    cancelEditBtn.addEventListener("click", resetForm);
+
+    fields.dob.addEventListener("input", () => {
+      const age = calcAge(fields.dob.value);
+      if (age !== null) {
+        fields.age.value = age;
+        dobError.style.display = age < 18 ? "block" : "none";
+      }
+    });
+
+    [fields.firstName, fields.lastName].forEach((el) =>
+      el.addEventListener("input", () => { dupError.style.display = "none"; })
+    );
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function save(people) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(people));
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "").replace(/[&<>"']/g, (c) => (
+        { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+      ));
+    }
+
+    function highlight(str, term) {
+      if (!term) return escapeHtml(str);
+      const escaped = escapeHtml(str);
+      const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return escaped.replace(new RegExp(`(${escapedTerm})`, "gi"), "<mark>$1</mark>");
+    }
+
+    function applyFilters(people) {
+      const term = searchInput.value.trim().toLowerCase();
+      const sex = filterSex.value;
+      const min = ageMin.value !== "" ? Number(ageMin.value) : null;
+      const max = ageMax.value !== "" ? Number(ageMax.value) : null;
+
+      return people.filter((p) => {
+        if (sex && p.sex !== sex) return false;
+        const age = Number(p.age);
+        if (min !== null && age < min) return false;
+        if (max !== null && age > max) return false;
+        if (term) {
+          const haystack = [p.firstName, p.lastName, p.city, p.job].join(" ").toLowerCase();
+          if (!haystack.includes(term)) return false;
+        }
+        return true;
+      });
+    }
+
+    function render() {
+      const all = load();
+      const filtered = applyFilters(all);
+      const term = searchInput.value.trim();
+
+      tableBody.innerHTML = "";
+
+      if (filtered.length === 0) {
+        emptyMsg.textContent = all.length === 0
+          ? "Aucune personne recensée pour le moment."
+          : "Aucun résultat ne correspond aux filtres.";
+        emptyMsg.classList.remove("hidden");
+      } else {
+        emptyMsg.classList.add("hidden");
+        filtered.forEach((p) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${highlight(p.firstName, term)}</td>
+            <td>${highlight(p.lastName, term)}</td>
+            <td>${formatDob(p.dob)}</td>
+            <td>${escapeHtml(p.age)}</td>
+            <td>${escapeHtml(p.civil) || "—"}</td>
+            <td>${escapeHtml(p.sex) || "—"}</td>
+            <td>${highlight(p.city, term)}</td>
+            <td>${highlight(p.job, term)}</td>
+            <td style="white-space:nowrap">
+              <button class="edit-btn" data-id="${p.id}">Modifier</button>
+              <button class="del-btn" data-id="${p.id}">Supprimer</button>
+            </td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+
+      resultCount.textContent = all.length > 0
+        ? `— ${filtered.length} / ${all.length}`
+        : "";
+
+      renderStats(filtered, all.length);
+    }
+
+    function renderStats(people, total) {
+      const ages = people.map((p) => Number(p.age)).filter((a) => !isNaN(a));
+      const avgAge = ages.length ? Math.round(ages.reduce((s, a) => s + a, 0) / ages.length) : "—";
+      const cities = new Set(people.map((p) => (p.city || "").trim().toLowerCase()).filter(Boolean));
+
+      statsEl.innerHTML = `
+        <div class="stat"><div class="value">${total}</div><div class="label">Personnes recensées</div></div>
+        <div class="stat"><div class="value">${people.length}</div><div class="label">Résultats affichés</div></div>
+        <div class="stat"><div class="value">${avgAge}</div><div class="label">Âge moyen (filtrés)</div></div>
+        <div class="stat"><div class="value">${cities.size}</div><div class="label">Villes distinctes</div></div>
+      `;
+    }
+
+    [searchInput, filterSex, ageMin, ageMax].forEach((el) =>
+      el.addEventListener("input", render)
+    );
+
+    resetFiltersBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      filterSex.value = "";
+      ageMin.value = "";
+      ageMax.value = "";
+      render();
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const person = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        firstName: fields.firstName.value.trim(),
+        lastName: fields.lastName.value.trim(),
+        dob: fields.dob.value,
+        age: fields.age.value.trim(),
+        civil: fields.civil.value,
+        sex: fields.sex.value,
+        city: fields.city.value.trim(),
+        job: fields.job.value.trim(),
+      };
+      if (!person.firstName || !person.lastName || !person.dob) return;
+      if (calcAge(person.dob) < 18) {
+        dobError.style.display = "block";
+        fields.dob.focus();
+        return;
+      }
+      dobError.style.display = "none";
+
+      const people = load();
+      const duplicate = people.some((p) =>
+        p.id !== editingId &&
+        p.firstName.trim().toLowerCase() === person.firstName.toLowerCase() &&
+        p.lastName.trim().toLowerCase() === person.lastName.toLowerCase()
+      );
+      if (duplicate) {
+        dupError.style.display = "block";
+        fields.firstName.focus();
+        return;
+      }
+      dupError.style.display = "none";
+
+      if (editingId) {
+        const idx = people.findIndex((p) => p.id === editingId);
+        if (idx !== -1) people[idx] = { ...people[idx], ...person, id: editingId };
+      } else {
+        people.push(person);
+      }
+      save(people);
+      resetForm();
+      render();
+    });
+
+    tableBody.addEventListener("click", (e) => {
+      if (e.target.closest(".edit-btn")) {
+        const id = e.target.closest(".edit-btn").dataset.id;
+        const p = load().find((x) => x.id === id);
+        if (!p) return;
+        editingId = id;
+        fields.firstName.value = p.firstName;
+        fields.lastName.value = p.lastName;
+        fields.dob.value = p.dob;
+        fields.age.value = p.age;
+        fields.civil.value = p.civil || "";
+        fields.sex.value = p.sex || "";
+        fields.city.value = p.city || "";
+        fields.job.value = p.job || "";
+        submitBtn.textContent = "Mettre à jour";
+        cancelEditBtn.style.display = "inline-flex";
+        form.classList.add("form-editing");
+        dupError.style.display = "none";
+        dobError.style.display = "none";
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+        fields.firstName.focus();
+        return;
+      }
+      const delBtn = e.target.closest(".del-btn");
+      if (!delBtn) return;
+      save(load().filter((p) => p.id !== delBtn.dataset.id));
+      if (editingId === delBtn.dataset.id) resetForm();
+      render();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      if (load().length === 0) return;
+      if (confirm("Effacer tout le recensement ? Cette action est irréversible.")) {
+        save([]);
+        render();
+      }
+    });
+
+    // --- Autocomplétion adresse (API Adresse data.gouv.fr) ---
+    const cityInput = fields.city;
+    const suggestionsEl = document.getElementById("city-suggestions");
+    let acTimer = null;
+    let acIndex = -1;
+
+    function closeSuggestions() {
+      suggestionsEl.classList.add("hidden");
+      suggestionsEl.innerHTML = "";
+      acIndex = -1;
+    }
+
+    function setActive(items, index) {
+      items.forEach((li, i) => li.classList.toggle("ac-active", i === index));
+    }
+
+    function showSuggestions(labels) {
+      suggestionsEl.innerHTML = "";
+      if (!labels.length) { closeSuggestions(); return; }
+      labels.forEach((label) => {
+        const li = document.createElement("li");
+        li.textContent = label;
+        li.setAttribute("role", "option");
+        li.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          cityInput.value = label;
+          closeSuggestions();
+        });
+        suggestionsEl.appendChild(li);
+      });
+      suggestionsEl.classList.remove("hidden");
+      acIndex = -1;
+    }
+
+    cityInput.addEventListener("input", () => {
+      clearTimeout(acTimer);
+      const q = cityInput.value.trim();
+      if (q.length < 3) { closeSuggestions(); return; }
+      acTimer = setTimeout(async () => {
+        try {
+          // Photon (OpenStreetMap) — bbox restreint à la Suisse
+          const bbox = "5.9559,45.8180,10.4923,47.8084";
+          const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=6&lang=fr&bbox=${bbox}`;
+          const res = await fetch(url);
+          if (!res.ok) return;
+          const data = await res.json();
+          const labels = data.features.map((f) => {
+            const p = f.properties;
+            const street = [p.street, p.housenumber].filter(Boolean).join(" ");
+            const locality = [p.postcode, p.city || p.county].filter(Boolean).join(" ");
+            return [p.name !== street ? p.name : null, street, locality]
+              .filter(Boolean)
+              .filter((v, i, a) => a.indexOf(v) === i)
+              .join(", ");
+          }).filter(Boolean);
+          showSuggestions(labels);
+        } catch { /* API indisponible : on laisse la saisie libre */ }
+      }, 300);
+    });
+
+    cityInput.addEventListener("keydown", (e) => {
+      const items = [...suggestionsEl.querySelectorAll("li")];
+      if (!items.length || suggestionsEl.classList.contains("hidden")) return;
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        acIndex = (acIndex + 1) % items.length;
+        setActive(items, acIndex);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        acIndex = (acIndex - 1 + items.length) % items.length;
+        setActive(items, acIndex);
+      } else if (e.key === "Enter" && acIndex >= 0) {
+        e.preventDefault();
+        cityInput.value = items[acIndex].textContent;
+        closeSuggestions();
+      } else if (e.key === "Escape") {
+        closeSuggestions();
+      }
+    });
+
+    cityInput.addEventListener("blur", () => setTimeout(closeSuggestions, 150));
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".autocomplete-wrap")) closeSuggestions();
+    });
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestion des absences</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>Absences de l'équipe</h1>
+</header>
+
+<main>
+  <section class="data-source-card">
+    <div id="data-source-status" class="data-status">
+      <span id="data-status-text">Initialisation...</span>
+      <span id="data-status-detail" class="data-status-detail"></span>
+    </div>
+    <div class="data-source-actions">
+      <button type="button" id="connect-file" hidden>Connecter un fichier partagé…</button>
+      <button type="button" id="create-file" hidden>Créer un nouveau fichier…</button>
+      <button type="button" id="grant-permission" hidden>Autoriser l'accès au fichier</button>
+      <button type="button" id="refresh-file" hidden>Actualiser</button>
+      <button type="button" id="disconnect-file" hidden class="link-btn">Déconnecter</button>
+    </div>
+  </section>
+
+  <section class="form-card">
+    <div id="user-identity" class="user-identity" hidden>
+      <span id="user-greeting"></span>
+      <button type="button" id="change-user" class="link-btn">Changer</button>
+    </div>
+    <div id="user-setup" class="user-setup" hidden>
+      <label>
+        Votre prénom
+        <input type="text" id="user-name-input" maxlength="40" placeholder="Prénom">
+      </label>
+      <button type="button" id="save-user">Valider</button>
+    </div>
+    <h2>Saisir une absence</h2>
+    <form id="absence-form">
+      <label>
+        Personne
+        <input type="text" id="person" required maxlength="40" placeholder="Prénom">
+      </label>
+      <label>
+        Du
+        <input type="date" id="start" required>
+      </label>
+      <label>
+        Au
+        <input type="date" id="end" required>
+      </label>
+      <button type="submit">Ajouter</button>
+    </form>
+    <p id="form-error" class="error" hidden></p>
+  </section>
+
+  <section class="calendar-card">
+    <div class="calendar-header">
+      <button id="prev-month" type="button" aria-label="Mois précédent">‹</button>
+      <h2 id="month-label"></h2>
+      <button id="next-month" type="button" aria-label="Mois suivant">›</button>
+      <button id="today" type="button">Aujourd'hui</button>
+    </div>
+    <div id="calendar" class="calendar"></div>
+  </section>
+
+  <section class="list-card">
+    <h2>Toutes les absences</h2>
+    <ul id="absence-list"></ul>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

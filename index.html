@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business People Coding — portfolio des ateliers</title>
+<style>
+  :root { --blue:#0b6bcb; --ink:#1a1a1a; --muted:#666; --bg:#fafafa; --card:#fff; --line:#e6e6e6; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; }
+  header { padding:56px 24px 28px; max-width:980px; margin:0 auto; }
+  h1 { color:var(--blue); font-size:2.1em; margin:0 0 8px; }
+  header p { color:var(--muted); margin:4px 0; max-width:60ch; }
+  main { max-width:980px; margin:0 auto; padding:0 24px 64px; }
+  section { margin-top:40px; }
+  .session-head { display:flex; align-items:baseline; gap:12px; border-bottom:2px solid var(--blue); padding-bottom:6px; }
+  .session-head h2 { color:var(--blue); margin:0; font-size:1.4em; }
+  .session-head .tag { color:var(--muted); font-size:.85em; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; margin-top:18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 18px 16px; display:flex; flex-direction:column; transition:box-shadow .15s,transform .15s; }
+  .card:hover { box-shadow:0 6px 20px rgba(11,107,203,.12); transform:translateY(-2px); }
+  .card h3 { margin:0 0 4px; font-size:1.1em; }
+  .card .who { color:var(--blue); font-weight:600; font-size:.8em; text-transform:uppercase; letter-spacing:.04em; }
+  .card p { color:var(--muted); font-size:.92em; margin:8px 0 14px; flex:1; }
+  .card a.open { align-self:flex-start; text-decoration:none; background:var(--blue); color:#fff; padding:7px 14px; border-radius:8px; font-size:.9em; font-weight:600; }
+  .card a.open:hover { background:#095aad; }
+  footer { max-width:980px; margin:0 auto; padding:24px; color:var(--muted); font-size:.85em; border-top:1px solid var(--line); }
+  code { background:#eef3f8; padding:1px 6px; border-radius:5px; font-size:.85em; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Business People Coding</h1>
+  <p>Portfolio des applications créées par des non-développeurs lors de l'atelier
+     « Faire une petite appli avec une IA, sans coder ».</p>
+  <p>Chaque session est archivée telle qu'elle était à la fin de l'atelier. Les applis
+     sont 100 % statiques et fonctionnent dans le navigateur.</p>
+</header>
+<main>
+
+  <section>
+    <div class="session-head"><h2>Session du 16 juin 2026</h2><span class="tag">tag <code>session-2026-06-16</code></span></div>
+    <div class="grid">
+      <div class="card"><span class="who">Groupe 1</span><h3>Saisie de noms &amp; bots</h3><p>Jeu de saisie de noms avec des bots de différents niveaux de difficulté.</p><a class="open" href="2026-06-16/group1/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Groupe 2</span><h3>Équilibre — perte de poids</h3><p>Journal des ressentis de faim et programme de reprogrammation alimentaire sur 21 jours.</p><a class="open" href="2026-06-16/group2/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Groupe 3</span><h3>Recherche BODACC</h3><p>Recherche d'entreprises françaises : descriptif et dirigeants à partir des annonces BODADC (OpenDataSoft).</p><a class="open" href="2026-06-16/group3/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Groupe 4</span><h3>PSYVAGO — annuaire santé</h3><p>Annuaire des professionnels de santé via l'API OpenDataSoft (médecins).</p><a class="open" href="2026-06-16/group4/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Groupe 5</span><h3>Bonjour Juan</h3><p>Page d'accueil minimale — point de départ à peine modifié.</p><a class="open" href="2026-06-16/group5/">Ouvrir →</a></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="session-head"><h2>Session du 10 juin 2026</h2><span class="tag">branche <code>solution/2026-06-10</code></span></div>
+    <div class="grid">
+      <div class="card"><span class="who">Groupe 1</span><h3>Gestion locative</h3><p>SPA de gestion locative avec modales (correctifs d'affichage).</p><a class="open" href="2026-06-10/group1/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Groupe 2</span><h3>App sport — données simulées</h3><p>Application d'entraînement fonctionnant à 100 % sur des données simulées (sans clé API).</p><a class="open" href="2026-06-10/group2/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Groupe 3</span><h3>ServiceDesk</h3><p>Site type ServiceNow Workspace (gestion de tickets / service desk).</p><a class="open" href="2026-06-10/group3/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Groupe 4</span><h3>Recensement</h3><p>Recensement avec vérification des doublons de noms et édition en ligne.</p><a class="open" href="2026-06-10/group4/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Groupe 5</span><h3>Multilingue</h3><p>Page avec sélecteur de langue (i18n), persistance localStorage et toast de confirmation.</p><a class="open" href="2026-06-10/group5/">Ouvrir →</a></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="session-head"><h2>Session du 6 mai 2026</h2><span class="tag">versions récupérées — tags <code>recovered/*</code></span></div>
+    <div class="grid">
+      <div class="card"><span class="who">Récupéré</span><h3>Gestion d'absences</h3><p>Suivi des absences avec persistance dans un fichier JSON partagé (File System Access API).</p><a class="open" href="2026-05-06/absences/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Récupéré</span><h3>Minuteur d'entraînement</h3><p>Minuteur de séance de sport (réglage de la taille de l'affichage).</p><a class="open" href="2026-05-06/timer/">Ouvrir →</a></div>
+      <div class="card"><span class="who">Récupéré</span><h3>Inscriptions + adresses</h3><p>Formulaire d'inscriptions (Formspree) avec autocomplétion d'adresse SITG (Genève).</p><a class="open" href="2026-05-06/inscriptions/">Ouvrir →</a></div>
+    </div>
+  </section>
+
+</main>
+<footer>
+  Atelier « Business People Coding » — Johan Martinsson &amp; Jean Dupuis.
+  Snapshots préservés depuis les dépôts des groupes ; chaque dossier correspond à l'état d'une appli en fin de session.
+</footer>
+</body>
+</html>
