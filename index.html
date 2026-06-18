@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Business People Coding — portfolio des ateliers</title>
+<title data-fr="Business People Coding — portfolio des ateliers" data-en="Business People Coding — workshop portfolio">Business People Coding — portfolio des ateliers</title>
 <style>
   :root{
     --blue:#0b6bcb; --blue-d:#084e96; --ink:#15202b; --muted:#5b6b7b;
@@ -24,6 +24,15 @@
   header p{margin:6px 0;max-width:62ch;color:#dbe9fb;font-size:1.04em;}
   .pill{display:inline-block;margin-top:18px;padding:5px 13px;border-radius:999px;
     background:rgba(255,255,255,.16);font-size:.82em;font-weight:600;backdrop-filter:blur(4px);}
+
+  /* ---- language toggle ---- */
+  .langtoggle{position:absolute;top:20px;right:24px;z-index:2;display:inline-flex;gap:2px;
+    background:rgba(255,255,255,.16);border-radius:999px;padding:3px;backdrop-filter:blur(4px);}
+  .langtoggle button{border:0;background:transparent;color:#dbe9fb;font:inherit;font-size:.8em;
+    font-weight:700;letter-spacing:.03em;padding:4px 12px;border-radius:999px;cursor:pointer;
+    transition:background .15s,color .15s;}
+  .langtoggle button:hover{color:#fff;}
+  .langtoggle button.active{background:#fff;color:var(--blue-d);}
 
   main{max-width:1080px;margin:0 auto;padding:8px 24px 72px;}
   section{margin-top:48px;}
@@ -67,160 +76,221 @@
 </head>
 <body>
 <header>
+  <div class="langtoggle" role="group" aria-label="Language / Langue">
+    <button type="button" data-lang="fr">FR</button>
+    <button type="button" data-lang="en">EN</button>
+  </div>
   <div class="wrap">
     <h1>Business People Coding</h1>
-    <p>Portfolio des applications créées par des non-développeurs lors de l'atelier
+    <p data-fr="Portfolio des applications créées par des non-développeurs lors de l'atelier « Faire une petite appli avec une IA, sans coder »."
+       data-en="A portfolio of apps built by non-developers during the workshop “Build a little app with AI, without coding”.">Portfolio des applications créées par des non-développeurs lors de l'atelier
        « Faire une petite appli avec une IA, sans coder ».</p>
-    <p>Chaque session est archivée telle qu'elle était en fin d'atelier. Les applis sont
+    <p data-fr="Chaque session est archivée telle qu'elle était en fin d'atelier. Les applis sont 100 % statiques et tournent directement dans le navigateur."
+       data-en="Each session is archived exactly as it stood at the end of the workshop. The apps are 100% static and run straight in the browser.">Chaque session est archivée telle qu'elle était en fin d'atelier. Les applis sont
        100 % statiques et tournent directement dans le navigateur.</p>
-    <span class="pill">4 sessions · 19 applis</span>
+    <span class="pill" data-fr="4 sessions · 19 applis" data-en="4 sessions · 19 apps">4 sessions · 19 applis</span>
   </div>
 </header>
 <main>
   <!-- publish-session.sh insère les nouvelles sessions directement sous cette ligne -->
 
   <section>
-    <div class="session-head"><h2>Session du 18 juin 2026</h2><span class="tag">tag <code>session-2026-06-18</code></span></div>
+    <div class="session-head"><h2 data-fr="Session du 18 juin 2026" data-en="Session of 18 June 2026">Session du 18 juin 2026</h2><span class="tag">tag <code>session-2026-06-18</code></span></div>
     <div class="grid">
       <a class="card" href="2026-06-18/group1/" style="--c1:#ffe9d6;--c2:#ffd0a8">
         <div class="thumb"><span class="emoji">🍳</span><img src="2026-06-18/group1/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 1</span><h3>PantryChef</h3>
-          <p>Indiquez les ingrédients que vous avez chez vous et découvrez ce que vous pouvez cuisiner — plusieurs recettes radicalement différentes selon le mode de cuisson.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 1" data-en="Group 1">Groupe 1</span><h3>PantryChef</h3>
+          <p data-fr="Indiquez les ingrédients que vous avez chez vous et découvrez ce que vous pouvez cuisiner — plusieurs recettes radicalement différentes selon le mode de cuisson."
+             data-en="List the ingredients you have at home and discover what you can cook — several radically different recipes depending on the cooking method.">Indiquez les ingrédients que vous avez chez vous et découvrez ce que vous pouvez cuisiner — plusieurs recettes radicalement différentes selon le mode de cuisson.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-18/group2/" style="--c1:#d6f0ff;--c2:#a8d8f5">
         <div class="thumb"><span class="emoji">🧭</span><img src="2026-06-18/group2/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 2</span><h3>Trip Concierge</h3>
-          <p>Construisez un itinéraire de voyage sur mesure à partir de votre profil et des détails du séjour : étapes, activités et programme jour par jour.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 2" data-en="Group 2">Groupe 2</span><h3>Trip Concierge</h3>
+          <p data-fr="Construisez un itinéraire de voyage sur mesure à partir de votre profil et des détails du séjour : étapes, activités et programme jour par jour."
+             data-en="Build a tailor-made travel itinerary from your profile and trip details: stops, activities and a day-by-day schedule.">Construisez un itinéraire de voyage sur mesure à partir de votre profil et des détails du séjour : étapes, activités et programme jour par jour.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-18/group3/" style="--c1:#e2dcff;--c2:#c2b6f5">
         <div class="thumb"><span class="emoji">🏆</span><img src="2026-06-18/group3/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 3</span><h3>Coupe du Monde 2026</h3>
-          <p>Vue arborescente de la phase de groupes de la Coupe du Monde 2026 : tous les groupes et les équipes qualifiées d'un coup d'œil.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 3" data-en="Group 3">Groupe 3</span><h3 data-fr="Coupe du Monde 2026" data-en="World Cup 2026">Coupe du Monde 2026</h3>
+          <p data-fr="Vue arborescente de la phase de groupes de la Coupe du Monde 2026 : tous les groupes et les équipes qualifiées d'un coup d'œil."
+             data-en="Tree view of the 2026 World Cup group stage: all the groups and qualified teams at a glance.">Vue arborescente de la phase de groupes de la Coupe du Monde 2026 : tous les groupes et les équipes qualifiées d'un coup d'œil.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-18/group4/" style="--c1:#d8f5e6;--c2:#aee6c8">
         <div class="thumb"><span class="emoji">📊</span><img src="2026-06-18/group4/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 4</span><h3>Team Maturity Compass</h3>
-          <p>Outil de leadership R&amp;D : enregistrez des événements, évaluez-les et suivez la maturité de votre équipe — de « low performing » à « high performing » — avec tendance et historique.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 4" data-en="Group 4">Groupe 4</span><h3>Team Maturity Compass</h3>
+          <p data-fr="Outil de leadership R&amp;D : enregistrez des événements, évaluez-les et suivez la maturité de votre équipe — de « low performing » à « high performing » — avec tendance et historique."
+             data-en="An R&amp;D leadership tool: log events, rate them and track your team's maturity — from “low performing” to “high performing” — with trend and history.">Outil de leadership R&amp;D : enregistrez des événements, évaluez-les et suivez la maturité de votre équipe — de « low performing » à « high performing » — avec tendance et historique.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-18/group5/" style="--c1:#e8f5d6;--c2:#cce8a8">
         <div class="thumb"><span class="emoji">🌳</span><img src="2026-06-18/group5/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 5</span><h3>Project Tree</h3>
-          <p>Explorateur arborescent de fichiers et dossiers (« Project Tree »), complété de deux mini-applis liées : « Food Recommendations » (plats, meilleur restaurant, historique) et « Match Predictor » (pronostics de matchs).</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 5" data-en="Group 5">Groupe 5</span><h3>Project Tree</h3>
+          <p data-fr="Explorateur arborescent de fichiers et dossiers (« Project Tree »), complété de deux mini-applis liées : « Food Recommendations » (plats, meilleur restaurant, historique) et « Match Predictor » (pronostics de matchs)."
+             data-en="A tree-style file and folder explorer (“Project Tree”), plus two linked mini-apps: “Food Recommendations” (dishes, best restaurant, history) and “Match Predictor” (match forecasts).">Explorateur arborescent de fichiers et dossiers (« Project Tree »), complété de deux mini-applis liées : « Food Recommendations » (plats, meilleur restaurant, historique) et « Match Predictor » (pronostics de matchs).</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
     </div>
   </section>
 
   <section>
-    <div class="session-head"><h2>Session du 16 juin 2026</h2><span class="tag">tag <code>session-2026-06-16</code></span></div>
+    <div class="session-head"><h2 data-fr="Session du 16 juin 2026" data-en="Session of 16 June 2026">Session du 16 juin 2026</h2><span class="tag">tag <code>session-2026-06-16</code></span></div>
     <div class="grid">
       <a class="card" href="2026-06-16/group1/" style="--c1:#fde4cf;--c2:#f7c79c">
         <div class="thumb"><span class="emoji">🐾</span><img src="2026-06-16/group1/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 1</span><h3>Punto Jungle 🐾</h3>
-          <p>Jeu de plateau « Punto » version jungle : alignez 4 de vos animaux pour régner sur la canopée. Parties contre des bots de difficulté réglable.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 1" data-en="Group 1">Groupe 1</span><h3>Punto Jungle 🐾</h3>
+          <p data-fr="Jeu de plateau « Punto » version jungle : alignez 4 de vos animaux pour régner sur la canopée. Parties contre des bots de difficulté réglable."
+             data-en="“Punto” board game, jungle edition: line up 4 of your animals to rule the canopy. Play against bots with adjustable difficulty.">Jeu de plateau « Punto » version jungle : alignez 4 de vos animaux pour régner sur la canopée. Parties contre des bots de difficulté réglable.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-16/group2/" style="--c1:#d8f5e6;--c2:#aee6c8">
         <div class="thumb"><span class="emoji">🍃</span><img src="2026-06-16/group2/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 2</span><h3>Équilibre</h3>
-          <p>Alimentation consciente : journal des ressentis de faim et reprogrammation mentale sur 21 jours, adaptée à votre profil.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 2" data-en="Group 2">Groupe 2</span><h3>Équilibre</h3>
+          <p data-fr="Alimentation consciente : journal des ressentis de faim et reprogrammation mentale sur 21 jours, adaptée à votre profil."
+             data-en="Mindful eating: a journal of hunger sensations and a 21-day mental reprogramming tailored to your profile.">Alimentation consciente : journal des ressentis de faim et reprogrammation mentale sur 21 jours, adaptée à votre profil.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-16/group3/" style="--c1:#d6f0ff;--c2:#a8d8f5">
         <div class="thumb"><span class="emoji">🏢</span><img src="2026-06-16/group3/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 3</span><h3>BODACC — capital en Isère</h3>
-          <p>Explore les changements de capital social des entreprises de l'Isère à partir des annonces BODACC (open data).</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 3" data-en="Group 3">Groupe 3</span><h3 data-fr="BODACC — capital en Isère" data-en="BODACC — capital in Isère">BODACC — capital en Isère</h3>
+          <p data-fr="Explore les changements de capital social des entreprises de l'Isère à partir des annonces BODACC (open data)."
+             data-en="Explore share-capital changes of companies in the Isère département, from BODACC announcements (open data).">Explore les changements de capital social des entreprises de l'Isère à partir des annonces BODACC (open data).</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-16/group4/" style="--c1:#e2dcff;--c2:#c2b6f5">
         <div class="thumb"><span class="emoji">💬</span><img src="2026-06-16/group4/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 4</span><h3>PSYVAGO</h3>
-          <p>« Votre espace d'écoute » : annuaire de professionnels de santé (psychologues, médecins) via OpenDataSoft.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 4" data-en="Group 4">Groupe 4</span><h3>PSYVAGO</h3>
+          <p data-fr="« Votre espace d'écoute » : annuaire de professionnels de santé (psychologues, médecins) via OpenDataSoft."
+             data-en="“Your listening space”: a directory of health professionals (psychologists, doctors) via OpenDataSoft.">« Votre espace d'écoute » : annuaire de professionnels de santé (psychologues, médecins) via OpenDataSoft.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-16/group5/" style="--c1:#ffe9d6;--c2:#ffd0a8">
         <div class="thumb"><span class="emoji">👋</span><img src="2026-06-16/group5/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 5</span><h3>Bonjour Juan</h3>
-          <p>Page d'accueil minimale — point de départ à peine modifié.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 5" data-en="Group 5">Groupe 5</span><h3>Bonjour Juan</h3>
+          <p data-fr="Page d'accueil minimale — point de départ à peine modifié."
+             data-en="A minimal home page — the starting point, barely changed.">Page d'accueil minimale — point de départ à peine modifié.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
     </div>
   </section>
 
   <section>
-    <div class="session-head"><h2>Session du 10 juin 2026</h2><span class="tag">branche <code>solution/2026-06-10</code></span></div>
+    <div class="session-head"><h2 data-fr="Session du 10 juin 2026" data-en="Session of 10 June 2026">Session du 10 juin 2026</h2><span class="tag" data-fr="branche <code>solution/2026-06-10</code>" data-en="branch <code>solution/2026-06-10</code>">branche <code>solution/2026-06-10</code></span></div>
     <div class="grid">
       <a class="card" href="2026-06-10/group1/" style="--c1:#d8f5e6;--c2:#aee6c8">
         <div class="thumb"><span class="emoji">⚽</span><img src="2026-06-10/group1/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 1</span><h3>Terrains de foot — Genève</h3>
-          <p>Réservation de terrains de foot à Genève : choix d'un créneau, code de réservation pour consulter/annuler, et gestion des terrains.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 1" data-en="Group 1">Groupe 1</span><h3 data-fr="Terrains de foot — Genève" data-en="Football Pitches — Geneva">Terrains de foot — Genève</h3>
+          <p data-fr="Réservation de terrains de foot à Genève : choix d'un créneau, code de réservation pour consulter/annuler, et gestion des terrains."
+             data-en="Football pitch booking in Geneva: pick a time slot, get a booking code to view or cancel, and manage the pitches.">Réservation de terrains de foot à Genève : choix d'un créneau, code de réservation pour consulter/annuler, et gestion des terrains.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-10/group2/" style="--c1:#d6f0ff;--c2:#a8d8f5">
         <div class="thumb"><span class="emoji">✈️</span><img src="2026-06-10/group2/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 2</span><h3>TravelMate</h3>
-          <p>Agence de voyage IA : décrivez votre voyage idéal et recevez un programme complet — vols, hôtel, activités, itinéraire jour par jour.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 2" data-en="Group 2">Groupe 2</span><h3>TravelMate</h3>
+          <p data-fr="Agence de voyage IA : décrivez votre voyage idéal et recevez un programme complet — vols, hôtel, activités, itinéraire jour par jour."
+             data-en="AI travel agency: describe your ideal trip and get a full plan — flights, hotel, activities, day-by-day itinerary.">Agence de voyage IA : décrivez votre voyage idéal et recevez un programme complet — vols, hôtel, activités, itinéraire jour par jour.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-10/group3/" style="--c1:#e2dcff;--c2:#c2b6f5">
         <div class="thumb"><span class="emoji">🎫</span><img src="2026-06-10/group3/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 3</span><h3>ServiceDesk Workspace</h3>
-          <p>Portail de support type ServiceNow : espace de travail de gestion de tickets.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 3" data-en="Group 3">Groupe 3</span><h3>ServiceDesk Workspace</h3>
+          <p data-fr="Portail de support type ServiceNow : espace de travail de gestion de tickets."
+             data-en="A ServiceNow-style support portal: a ticket-management workspace.">Portail de support type ServiceNow : espace de travail de gestion de tickets.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-10/group4/recensement.html" style="--c1:#fde4cf;--c2:#f7c79c">
         <div class="thumb"><span class="emoji">📋</span><img src="2026-06-10/group4/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 4</span><h3>Recensement</h3>
-          <p>Liste de personnes avec détection des doublons de prénom et édition en ligne. (La page d'accueil du dépôt est restée un « Hello World ».)</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 4" data-en="Group 4">Groupe 4</span><h3 data-fr="Recensement" data-en="Census">Recensement</h3>
+          <p data-fr="Liste de personnes avec détection des doublons de prénom et édition en ligne. (La page d'accueil du dépôt est restée un « Hello World ».)"
+             data-en="A list of people with first-name duplicate detection and inline editing. (The repo's home page stayed a “Hello World”.)">Liste de personnes avec détection des doublons de prénom et édition en ligne. (La page d'accueil du dépôt est restée un « Hello World ».)</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-06-10/group5/" style="--c1:#e8f5d6;--c2:#cce8a8">
         <div class="thumb"><span class="emoji">🌱</span><img src="2026-06-10/group5/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Groupe 5</span><h3>AgroAssistant</h3>
-          <p>Assistant de diagnostic végétal : identifie les problèmes et maladies des plantes.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Groupe 5" data-en="Group 5">Groupe 5</span><h3>AgroAssistant</h3>
+          <p data-fr="Assistant de diagnostic végétal : identifie les problèmes et maladies des plantes."
+             data-en="A plant-diagnosis assistant: identifies plant problems and diseases.">Assistant de diagnostic végétal : identifie les problèmes et maladies des plantes.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
     </div>
   </section>
 
   <section>
-    <div class="session-head"><h2>Session du 6 mai 2026</h2><span class="tag">versions récupérées — tags <code>recovered/*</code></span></div>
+    <div class="session-head"><h2 data-fr="Session du 6 mai 2026" data-en="Session of 6 May 2026">Session du 6 mai 2026</h2><span class="tag" data-fr="versions récupérées — tags <code>recovered/*</code>" data-en="recovered versions — tags <code>recovered/*</code>">versions récupérées — tags <code>recovered/*</code></span></div>
     <div class="grid">
       <a class="card" href="2026-05-06/gestion-locative/" style="--c1:#d6f0ff;--c2:#a8d8f5">
         <div class="thumb"><span class="emoji">🏠</span><img src="2026-05-06/gestion-locative/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Récupéré · groupe 1</span><h3>Gestion locative</h3>
-          <p>SPA de gestion locative — appartements, locations, loyers et charges — avec barre latérale et icônes Lucide. (Une variante backend Spring Boot + PostgreSQL existe sur la branche <code>vbackend</code>.)</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Récupéré · groupe 1" data-en="Recovered · group 1">Récupéré · groupe 1</span><h3 data-fr="Gestion locative" data-en="Rental Management">Gestion locative</h3>
+          <p data-fr="SPA de gestion locative — appartements, locations, loyers et charges — avec barre latérale et icônes Lucide. (Une variante backend Spring Boot + PostgreSQL existe sur la branche <code>vbackend</code>.)"
+             data-en="A rental-management SPA — apartments, leases, rents and charges — with a sidebar and Lucide icons. (A Spring Boot + PostgreSQL backend variant exists on the <code>vbackend</code> branch.)">SPA de gestion locative — appartements, locations, loyers et charges — avec barre latérale et icônes Lucide. (Une variante backend Spring Boot + PostgreSQL existe sur la branche <code>vbackend</code>.)</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-05-06/absences/" style="--c1:#e2dcff;--c2:#c2b6f5">
         <div class="thumb"><span class="emoji">🗓️</span><img src="2026-05-06/absences/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Récupéré</span><h3>Gestion des absences</h3>
-          <p>Suivi des absences d'une équipe : saisie et liste des absences, avec persistance dans un fichier JSON partagé.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Récupéré" data-en="Recovered">Récupéré</span><h3 data-fr="Gestion des absences" data-en="Absence Tracker">Gestion des absences</h3>
+          <p data-fr="Suivi des absences d'une équipe : saisie et liste des absences, avec persistance dans un fichier JSON partagé."
+             data-en="Team absence tracking: enter and list absences, persisted to a shared JSON file.">Suivi des absences d'une équipe : saisie et liste des absences, avec persistance dans un fichier JSON partagé.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-05-06/timer/" style="--c1:#ffe0e0;--c2:#f7b9b9">
         <div class="thumb"><span class="emoji">⏱️</span><img src="2026-05-06/timer/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Récupéré</span><h3>HIIT / Tabata Timer</h3>
-          <p>Minuteur d'intervalles pour séances HIIT / Tabata : configuration des temps d'effort et de repos.</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Récupéré" data-en="Recovered">Récupéré</span><h3>HIIT / Tabata Timer</h3>
+          <p data-fr="Minuteur d'intervalles pour séances HIIT / Tabata : configuration des temps d'effort et de repos."
+             data-en="An interval timer for HIIT / Tabata workouts: configure work and rest durations.">Minuteur d'intervalles pour séances HIIT / Tabata : configuration des temps d'effort et de repos.</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
       <a class="card" href="2026-05-06/inscriptions/" style="--c1:#fde4cf;--c2:#f7c79c">
         <div class="thumb"><span class="emoji">🎉</span><img src="2026-05-06/inscriptions/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who">Récupéré</span><h3>Fête du quartier</h3>
-          <p>Formulaire d'inscription à la fête du quartier (Formspree) avec autocomplétion d'adresse SITG (Genève).</p>
-          <span class="open">Ouvrir <span class="arr">→</span></span></div>
+        <div class="body"><span class="who" data-fr="Récupéré" data-en="Recovered">Récupéré</span><h3 data-fr="Fête du quartier" data-en="Neighborhood Party">Fête du quartier</h3>
+          <p data-fr="Formulaire d'inscription à la fête du quartier (Formspree) avec autocomplétion d'adresse SITG (Genève)."
+             data-en="A sign-up form for the neighborhood party (Formspree) with SITG address autocomplete (Geneva).">Formulaire d'inscription à la fête du quartier (Formspree) avec autocomplétion d'adresse SITG (Genève).</p>
+          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
       </a>
     </div>
   </section>
 
 </main>
-<footer>
+<footer data-fr="Atelier « Business People Coding » — Johan Martinsson &amp; Jean Dupuis. Snapshots préservés depuis les dépôts des groupes ; chaque dossier correspond à l'état d'une appli en fin de session."
+        data-en="“Business People Coding” workshop — Johan Martinsson &amp; Jean Dupuis. Snapshots preserved from the group repos; each folder is the state of an app at the end of a session.">
   Atelier « Business People Coding » — Johan Martinsson &amp; Jean Dupuis.
   Snapshots préservés depuis les dépôts des groupes ; chaque dossier correspond à l'état d'une appli en fin de session.
 </footer>
+<script>
+(function(){
+  var KEY = "bpc-lang";
+  function pick(){
+    var saved = localStorage.getItem(KEY);
+    if (saved === "fr" || saved === "en") return saved;
+    var nav = (navigator.language || "").toLowerCase();
+    if (nav.indexOf("fr") === 0) return "fr";
+    if (nav.indexOf("en") === 0) return "en";
+    return "fr"; // fallback
+  }
+  function apply(lang){
+    document.documentElement.lang = lang;
+    var nodes = document.querySelectorAll("[data-fr]");
+    for (var i = 0; i < nodes.length; i++){
+      var v = nodes[i].getAttribute("data-" + lang);
+      if (v != null) nodes[i].innerHTML = v;
+    }
+    var t = document.querySelector("title[data-" + lang + "]");
+    if (t) document.title = t.getAttribute("data-" + lang);
+    var btns = document.querySelectorAll(".langtoggle button");
+    for (var j = 0; j < btns.length; j++){
+      var on = btns[j].getAttribute("data-lang") === lang;
+      btns[j].classList.toggle("active", on);
+      btns[j].setAttribute("aria-pressed", on ? "true" : "false");
+    }
+  }
+  function set(lang){ try { localStorage.setItem(KEY, lang); } catch(e){} apply(lang); }
+  document.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".langtoggle button") : null;
+    if (b) set(b.getAttribute("data-lang"));
+  });
+  apply(pick());
+})();
+</script>
 </body>
 </html>
