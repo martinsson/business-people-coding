@@ -4,249 +4,322 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title data-fr="Business People Coding — portfolio des ateliers" data-en="Business People Coding — workshop portfolio">Business People Coding — portfolio des ateliers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --blue:#0b6bcb; --blue-d:#084e96; --ink:#15202b; --muted:#5b6b7b;
-    --bg:#f4f7fb; --card:#fff; --line:#e7edf3; --shadow:rgba(13,38,76,.10);
+    --bg:#fbf9f6; --ink:#15131b; --muted:#6c6577; --line:#ece7e0;
+    --card:#fffdfb; --accent:#6d3bf5; --accent2:#ff5d73;
+    --shadow:28px 40px 80px -40px rgba(40,20,80,.45);
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  .serif{font-family:"Fraunces",Georgia,serif;}
 
-  /* ---- header ---- */
-  header{position:relative;overflow:hidden;color:#fff;
-    background:linear-gradient(135deg,#0b6bcb 0%,#0a4f9e 55%,#073b78 100%);}
-  header .wrap{max-width:1080px;margin:0 auto;padding:64px 24px 52px;position:relative;z-index:1;}
-  header::after{content:"";position:absolute;inset:0;
-    background:radial-gradient(60% 120% at 85% -10%,rgba(255,255,255,.18),transparent 60%);}
-  h1{font-size:2.5em;margin:0 0 10px;letter-spacing:-.02em;}
-  header p{margin:6px 0;max-width:62ch;color:#dbe9fb;font-size:1.04em;}
-  .pill{display:inline-block;margin-top:18px;padding:5px 13px;border-radius:999px;
-    background:rgba(255,255,255,.16);font-size:.82em;font-weight:600;backdrop-filter:blur(4px);}
+  /* film grain */
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");}
 
-  /* ---- language toggle ---- */
-  .langtoggle{position:absolute;top:20px;right:24px;z-index:2;display:inline-flex;gap:2px;
-    background:rgba(255,255,255,.16);border-radius:999px;padding:3px;backdrop-filter:blur(4px);}
-  .langtoggle button{border:0;background:transparent;color:#dbe9fb;font:inherit;font-size:.8em;
-    font-weight:700;letter-spacing:.03em;padding:4px 12px;border-radius:999px;cursor:pointer;
-    transition:background .15s,color .15s;}
-  .langtoggle button:hover{color:#fff;}
-  .langtoggle button.active{background:#fff;color:var(--blue-d);}
+  /* ---------- language toggle ---------- */
+  .langtoggle{position:absolute;top:20px;right:24px;z-index:4;display:inline-flex;gap:2px;
+    background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;
+    box-shadow:0 6px 18px -10px rgba(40,20,80,.5);}
+  .langtoggle button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:.78rem;
+    font-weight:700;letter-spacing:.04em;padding:5px 13px;border-radius:999px;cursor:pointer;transition:.15s;}
+  .langtoggle button:hover{color:var(--ink);}
+  .langtoggle button.active{background:linear-gradient(100deg,var(--accent),var(--accent2));color:#fff;}
 
-  main{max-width:1080px;margin:0 auto;padding:8px 24px 72px;}
-  section{margin-top:48px;}
-  .session-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
-    border-bottom:2px solid var(--line);padding-bottom:10px;}
-  .session-head h2{color:var(--ink);margin:0;font-size:1.35em;letter-spacing:-.01em;}
-  .session-head .tag{color:var(--muted);font-size:.82em;}
-  .session-head .tag code{background:#eaf1f9;color:var(--blue-d);padding:2px 7px;border-radius:6px;font-size:.92em;}
+  /* ---------- hero ---------- */
+  .hero{position:relative;overflow:hidden;padding:104px 24px 88px;text-align:center;}
+  .blobs{position:absolute;inset:-20% -10%;z-index:0;filter:blur(60px);opacity:.85;}
+  .blob{position:absolute;width:46vw;height:46vw;border-radius:50%;mix-blend-mode:multiply;animation:drift 22s ease-in-out infinite;}
+  .b1{background:#ffd0a8;top:-6%;left:4%;}
+  .b2{background:#c4b6ff;top:0;right:2%;animation-delay:-7s;}
+  .b3{background:#a8e6ff;bottom:-18%;left:30%;animation-delay:-13s;}
+  .b4{background:#ffb3c7;bottom:-10%;right:18%;animation-delay:-4s;}
+  @keyframes drift{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(4%,6%) scale(1.08);}66%{transform:translate(-5%,-3%) scale(.95);}}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px;margin-top:24px;}
+  .hero-inner{position:relative;z-index:2;max-width:940px;margin:0 auto;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--accent);
+    background:rgba(109,59,245,.08);border:1px solid rgba(109,59,245,.18);
+    padding:7px 15px;border-radius:999px;margin-bottom:26px;}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);box-shadow:0 0 0 4px rgba(255,93,115,.2);}
+  h1.title{font-weight:600;font-size:clamp(2.6rem,6.6vw,5.4rem);line-height:1.03;letter-spacing:-.03em;margin:0 0 22px;}
+  h1.title em{font-style:italic;background:linear-gradient(100deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;}
+  .lede{font-size:clamp(1.02rem,1.7vw,1.22rem);color:var(--muted);max-width:62ch;margin:0 auto 12px;}
+  .lede.small{font-size:1rem;opacity:.85;}
+  .pill{display:inline-block;margin-top:18px;padding:7px 16px;border-radius:999px;font-size:.84rem;font-weight:600;
+    color:var(--accent);background:#fff;border:1px solid var(--line);box-shadow:0 6px 18px -12px rgba(40,20,80,.5);}
 
-  /* ---- card ---- */
-  .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);
-    border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;
-    box-shadow:0 1px 2px var(--shadow);transition:box-shadow .2s,transform .2s,border-color .2s;}
-  .card:hover{transform:translateY(-4px);box-shadow:0 16px 36px var(--shadow);border-color:#cfe0f1;}
+  /* floating collage */
+  .collage{position:relative;z-index:1;max-width:1080px;margin:64px auto 0;height:330px;}
+  .float{position:absolute;width:300px;border-radius:14px;overflow:hidden;background:#fff;
+    box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.7);animation:bob 9s ease-in-out infinite;}
+  .float img{display:block;width:100%;}
+  .f1{left:2%;top:40px;transform:rotate(-7deg);}
+  .f2{left:30%;top:0;width:340px;z-index:3;transform:rotate(1deg);animation-delay:-3s;}
+  .f3{right:24%;top:60px;transform:rotate(5deg);animation-delay:-5s;}
+  .f4{right:0;top:18px;width:260px;transform:rotate(9deg);animation-delay:-1.5s;opacity:.96;}
+  @keyframes bob{0%,100%{translate:0 0;}50%{translate:0 -16px;}}
 
-  .thumb{position:relative;aspect-ratio:16/10;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,var(--c1,#dbe9fb),var(--c2,#b9d4f3));}
-  .thumb .emoji{font-size:3.4em;filter:drop-shadow(0 2px 6px rgba(0,0,0,.12));opacity:.9;}
-  .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;
-    transition:transform .45s ease;background:#fff;}
-  .card:hover .thumb img{transform:scale(1.07);}
-  .thumb img[src=""],.thumb img:not([src]){display:none;}
+  /* ---------- sections ---------- */
+  main{max-width:1140px;margin:0 auto;padding:30px 24px 70px;}
+  .stats{display:flex;gap:48px;justify-content:center;flex-wrap:wrap;margin:18px 0 86px;
+    padding:32px;border-radius:22px;background:var(--card);border:1px solid var(--line);
+    box-shadow:0 30px 60px -50px rgba(40,20,80,.5);}
+  .stat{text-align:center;}
+  .stat .n{font-family:"Fraunces";font-weight:600;font-size:2.6rem;line-height:1;
+    background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .stat .l{color:var(--muted);font-size:.92rem;margin-top:6px;}
 
-  .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1;}
-  .who{color:var(--blue);font-weight:700;font-size:.72em;text-transform:uppercase;letter-spacing:.07em;}
-  .card h3{margin:5px 0 0;font-size:1.12em;letter-spacing:-.01em;}
-  .card p{color:var(--muted);font-size:.92em;margin:8px 0 16px;flex:1;}
-  .open{align-self:flex-start;font-weight:600;font-size:.9em;color:var(--blue);
-    display:inline-flex;align-items:center;gap:5px;}
-  .card:hover .open{color:var(--blue-d);}
-  .open .arr{transition:transform .2s;}
-  .card:hover .open .arr{transform:translateX(3px);}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+    margin:0 0 34px;border-bottom:1px solid var(--line);padding-bottom:16px;}
+  .sec-head h2{font-family:"Fraunces";font-weight:600;font-size:clamp(1.6rem,3.3vw,2.5rem);
+    letter-spacing:-.02em;margin:0;}
+  .sec-head .tag{color:var(--muted);font-size:.85rem;white-space:nowrap;}
+  .sec-head code{background:#f0ebff;color:var(--accent);padding:3px 9px;border-radius:7px;font-size:.85em;}
 
-  footer{max-width:1080px;margin:0 auto;padding:28px 24px 48px;color:var(--muted);
-    font-size:.85em;border-top:1px solid var(--line);}
-  footer a{color:var(--blue);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:34px;}
+  section{margin-top:64px;}
+
+  /* ---------- card: browser frame + 3D tilt ---------- */
+  .card{display:block;text-decoration:none;color:inherit;perspective:1200px;animation:rise .7s both;}
+  @keyframes rise{from{opacity:0;transform:translateY(34px);}to{opacity:1;transform:none;}}
+  .grid .card:nth-child(2){animation-delay:.08s;}
+  .grid .card:nth-child(3){animation-delay:.16s;}
+  .grid .card:nth-child(4){animation-delay:.24s;}
+  .grid .card:nth-child(5){animation-delay:.32s;}
+  .grid .card:nth-child(6){animation-delay:.40s;}
+  .frame{border-radius:16px;overflow:hidden;background:#fff;border:1px solid var(--line);
+    box-shadow:0 26px 50px -34px rgba(40,20,80,.5);
+    transform-style:preserve-3d;transition:transform .25s ease,box-shadow .25s ease;will-change:transform;}
+  .card:hover .frame{box-shadow:0 40px 70px -34px rgba(40,20,80,.62);}
+  .bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:#f6f2ec;border-bottom:1px solid var(--line);}
+  .bar i{width:11px;height:11px;border-radius:50%;display:block;}
+  .bar i:nth-child(1){background:#ff5f57;}.bar i:nth-child(2){background:#febc2e;}.bar i:nth-child(3){background:#28c840;}
+  .bar .url{margin-left:10px;font-size:.74rem;color:#a89f93;background:#fff;border:1px solid var(--line);
+    padding:3px 12px;border-radius:999px;flex:1;max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .shot{position:relative;aspect-ratio:16/10;overflow:hidden;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--c1,#eee),var(--c2,#ddd));}
+  .shot .emoji{font-size:3.2em;opacity:.85;filter:drop-shadow(0 2px 6px rgba(0,0,0,.12));}
+  .shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform .5s ease;background:#fff;}
+  .card:hover .shot img{transform:scale(1.06);}
+  .shot img:not([src]),.shot img[src=""]{display:none;}
+
+  .meta{padding:20px 6px 0;}
+  .who{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);}
+  .meta h3{font-family:"Fraunces";font-weight:600;font-size:1.32rem;margin:6px 0 0;letter-spacing:-.01em;
+    display:inline;background-image:linear-gradient(var(--accent),var(--accent));
+    background-size:0% 2px;background-position:0 100%;background-repeat:no-repeat;transition:background-size .35s;}
+  .card:hover .meta h3{background-size:100% 2px;}
+  .meta p{color:var(--muted);font-size:.95rem;margin:12px 0 0;}
+
+  footer{text-align:center;color:var(--muted);font-size:.85rem;padding:44px 24px 72px;
+    border-top:1px solid var(--line);max-width:1140px;margin:0 auto;}
+  footer a{color:var(--accent);}
+
+  @media (prefers-reduced-motion:reduce){
+    *,.float,.blob,.card{animation:none!important;}
+    .float{translate:none!important;}
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="langtoggle" role="group" aria-label="Language / Langue">
-    <button type="button" data-lang="fr">FR</button>
-    <button type="button" data-lang="en">EN</button>
-  </div>
-  <div class="wrap">
-    <h1>Business People Coding</h1>
-    <p data-fr="Portfolio des applications créées par des non-développeurs lors de l'atelier « Faire une petite appli avec une IA, sans coder »."
-       data-en="A portfolio of apps built by non-developers during the workshop “Build a little app with AI, without coding”.">Portfolio des applications créées par des non-développeurs lors de l'atelier
-       « Faire une petite appli avec une IA, sans coder ».</p>
-    <p data-fr="Chaque session est archivée telle qu'elle était en fin d'atelier. Les applis sont 100 % statiques et tournent directement dans le navigateur."
-       data-en="Each session is archived exactly as it stood at the end of the workshop. The apps are 100% static and run straight in the browser.">Chaque session est archivée telle qu'elle était en fin d'atelier. Les applis sont
-       100 % statiques et tournent directement dans le navigateur.</p>
+<div class="langtoggle" role="group" aria-label="Language / Langue">
+  <button type="button" data-lang="fr">FR</button>
+  <button type="button" data-lang="en">EN</button>
+</div>
+
+<header class="hero">
+  <div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div></div>
+  <div class="hero-inner">
+    <span class="eyebrow"><span class="dot"></span><span data-fr="Faire une appli avec une IA, sans coder" data-en="Build an app with AI, without coding">Faire une appli avec une IA, sans coder</span></span>
+    <h1 class="title serif"
+        data-fr="Des gens du métier.<br>De vraies applis. <em>Zéro code.</em>"
+        data-en="Business people.<br>Real apps. <em>Zero code.</em>">Des gens du métier.<br>De vraies applis. <em>Zéro code.</em></h1>
+    <p class="lede" data-fr="Portfolio des applications créées par des non-développeurs lors de l'atelier « Business People Coding »."
+       data-en="A portfolio of apps built by non-developers during the “Business People Coding” workshop.">Portfolio des applications créées par des non-développeurs lors de l'atelier « Business People Coding ».</p>
+    <p class="lede small" data-fr="Chaque session est archivée telle qu'elle était en fin d'atelier. Les applis sont 100 % statiques et tournent directement dans le navigateur."
+       data-en="Each session is archived exactly as it stood at the end of the workshop. The apps are 100% static and run straight in the browser.">Chaque session est archivée telle qu'elle était en fin d'atelier. Les applis sont 100 % statiques et tournent directement dans le navigateur.</p>
     <span class="pill" data-fr="4 sessions · 19 applis" data-en="4 sessions · 19 apps">4 sessions · 19 applis</span>
   </div>
+  <div class="collage">
+    <div class="float f1"><img src="2026-06-18/group4/preview.png" alt=""></div>
+    <div class="float f2"><img src="2026-06-18/group1/preview.png" alt=""></div>
+    <div class="float f3"><img src="2026-06-18/group3/preview.png" alt=""></div>
+    <div class="float f4"><img src="2026-05-06/gestion-locative/preview.png" alt=""></div>
+  </div>
 </header>
+
 <main>
+  <div class="stats">
+    <div class="stat"><div class="n" data-count="4">4</div><div class="l" data-fr="sessions d'atelier" data-en="workshop sessions">sessions d'atelier</div></div>
+    <div class="stat"><div class="n" data-count="19">19</div><div class="l" data-fr="applications" data-en="applications">applications</div></div>
+    <div class="stat"><div class="n" data-count="5">5</div><div class="l" data-fr="groupes par session" data-en="groups per session">groupes par session</div></div>
+    <div class="stat"><div class="n" data-count="100" data-suffix=" %">100 %</div><div class="l" data-fr="statique, sans backend" data-en="static, no backend">statique, sans backend</div></div>
+  </div>
+
   <!-- publish-session.sh insère les nouvelles sessions directement sous cette ligne -->
 
   <section>
-    <div class="session-head"><h2 data-fr="Session du 18 juin 2026" data-en="Session of 18 June 2026">Session du 18 juin 2026</h2><span class="tag">tag <code>session-2026-06-18</code></span></div>
+    <div class="sec-head"><h2 data-fr="Session du 18 juin 2026" data-en="Session of 18 June 2026">Session du 18 juin 2026</h2><span class="tag">tag <code>session-2026-06-18</code></span></div>
     <div class="grid">
       <a class="card" href="2026-06-18/group1/" style="--c1:#ffe9d6;--c2:#ffd0a8">
-        <div class="thumb"><span class="emoji">🍳</span><img src="2026-06-18/group1/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 1" data-en="Group 1">Groupe 1</span><h3>PantryChef</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">pantrychef</span></div>
+          <div class="shot"><span class="emoji">🍳</span><img src="2026-06-18/group1/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 1" data-en="Group 1">Groupe 1</span><h3>PantryChef</h3>
           <p data-fr="Indiquez les ingrédients que vous avez chez vous et découvrez ce que vous pouvez cuisiner — plusieurs recettes radicalement différentes selon le mode de cuisson."
-             data-en="List the ingredients you have at home and discover what you can cook — several radically different recipes depending on the cooking method.">Indiquez les ingrédients que vous avez chez vous et découvrez ce que vous pouvez cuisiner — plusieurs recettes radicalement différentes selon le mode de cuisson.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="List the ingredients you have at home and discover what you can cook — several radically different recipes depending on the cooking method.">Indiquez les ingrédients que vous avez chez vous et découvrez ce que vous pouvez cuisiner — plusieurs recettes radicalement différentes selon le mode de cuisson.</p></div>
       </a>
       <a class="card" href="2026-06-18/group2/" style="--c1:#d6f0ff;--c2:#a8d8f5">
-        <div class="thumb"><span class="emoji">🧭</span><img src="2026-06-18/group2/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 2" data-en="Group 2">Groupe 2</span><h3>Trip Concierge</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">trip-concierge</span></div>
+          <div class="shot"><span class="emoji">🧭</span><img src="2026-06-18/group2/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 2" data-en="Group 2">Groupe 2</span><h3>Trip Concierge</h3>
           <p data-fr="Construisez un itinéraire de voyage sur mesure à partir de votre profil et des détails du séjour : étapes, activités et programme jour par jour."
-             data-en="Build a tailor-made travel itinerary from your profile and trip details: stops, activities and a day-by-day schedule.">Construisez un itinéraire de voyage sur mesure à partir de votre profil et des détails du séjour : étapes, activités et programme jour par jour.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="Build a tailor-made travel itinerary from your profile and trip details: stops, activities and a day-by-day schedule.">Construisez un itinéraire de voyage sur mesure à partir de votre profil et des détails du séjour : étapes, activités et programme jour par jour.</p></div>
       </a>
       <a class="card" href="2026-06-18/group3/" style="--c1:#e2dcff;--c2:#c2b6f5">
-        <div class="thumb"><span class="emoji">🏆</span><img src="2026-06-18/group3/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 3" data-en="Group 3">Groupe 3</span><h3 data-fr="Coupe du Monde 2026" data-en="World Cup 2026">Coupe du Monde 2026</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">world-cup-2026</span></div>
+          <div class="shot"><span class="emoji">🏆</span><img src="2026-06-18/group3/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 3" data-en="Group 3">Groupe 3</span><h3 data-fr="Coupe du Monde 2026" data-en="World Cup 2026">Coupe du Monde 2026</h3>
           <p data-fr="Vue arborescente de la phase de groupes de la Coupe du Monde 2026 : tous les groupes et les équipes qualifiées d'un coup d'œil."
-             data-en="Tree view of the 2026 World Cup group stage: all the groups and qualified teams at a glance.">Vue arborescente de la phase de groupes de la Coupe du Monde 2026 : tous les groupes et les équipes qualifiées d'un coup d'œil.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="Tree view of the 2026 World Cup group stage: all the groups and qualified teams at a glance.">Vue arborescente de la phase de groupes de la Coupe du Monde 2026 : tous les groupes et les équipes qualifiées d'un coup d'œil.</p></div>
       </a>
       <a class="card" href="2026-06-18/group4/" style="--c1:#d8f5e6;--c2:#aee6c8">
-        <div class="thumb"><span class="emoji">📊</span><img src="2026-06-18/group4/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 4" data-en="Group 4">Groupe 4</span><h3>Team Maturity Compass</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">maturity-compass</span></div>
+          <div class="shot"><span class="emoji">📊</span><img src="2026-06-18/group4/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 4" data-en="Group 4">Groupe 4</span><h3>Team Maturity Compass</h3>
           <p data-fr="Outil de leadership R&amp;D : enregistrez des événements, évaluez-les et suivez la maturité de votre équipe — de « low performing » à « high performing » — avec tendance et historique."
-             data-en="An R&amp;D leadership tool: log events, rate them and track your team's maturity — from “low performing” to “high performing” — with trend and history.">Outil de leadership R&amp;D : enregistrez des événements, évaluez-les et suivez la maturité de votre équipe — de « low performing » à « high performing » — avec tendance et historique.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="An R&amp;D leadership tool: log events, rate them and track your team's maturity — from “low performing” to “high performing” — with trend and history.">Outil de leadership R&amp;D : enregistrez des événements, évaluez-les et suivez la maturité de votre équipe — de « low performing » à « high performing » — avec tendance et historique.</p></div>
       </a>
       <a class="card" href="2026-06-18/group5/" style="--c1:#e8f5d6;--c2:#cce8a8">
-        <div class="thumb"><span class="emoji">🌳</span><img src="2026-06-18/group5/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 5" data-en="Group 5">Groupe 5</span><h3>Project Tree</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">project-tree</span></div>
+          <div class="shot"><span class="emoji">🌳</span><img src="2026-06-18/group5/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 5" data-en="Group 5">Groupe 5</span><h3>Project Tree</h3>
           <p data-fr="Explorateur arborescent de fichiers et dossiers (« Project Tree »), complété de deux mini-applis liées : « Food Recommendations » (plats, meilleur restaurant, historique) et « Match Predictor » (pronostics de matchs)."
-             data-en="A tree-style file and folder explorer (“Project Tree”), plus two linked mini-apps: “Food Recommendations” (dishes, best restaurant, history) and “Match Predictor” (match forecasts).">Explorateur arborescent de fichiers et dossiers (« Project Tree »), complété de deux mini-applis liées : « Food Recommendations » (plats, meilleur restaurant, historique) et « Match Predictor » (pronostics de matchs).</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="A tree-style file and folder explorer (“Project Tree”), plus two linked mini-apps: “Food Recommendations” (dishes, best restaurant, history) and “Match Predictor” (match forecasts).">Explorateur arborescent de fichiers et dossiers (« Project Tree »), complété de deux mini-applis liées : « Food Recommendations » (plats, meilleur restaurant, historique) et « Match Predictor » (pronostics de matchs).</p></div>
       </a>
     </div>
   </section>
 
   <section>
-    <div class="session-head"><h2 data-fr="Session du 16 juin 2026" data-en="Session of 16 June 2026">Session du 16 juin 2026</h2><span class="tag">tag <code>session-2026-06-16</code></span></div>
+    <div class="sec-head"><h2 data-fr="Session du 16 juin 2026" data-en="Session of 16 June 2026">Session du 16 juin 2026</h2><span class="tag">tag <code>session-2026-06-16</code></span></div>
     <div class="grid">
       <a class="card" href="2026-06-16/group1/" style="--c1:#fde4cf;--c2:#f7c79c">
-        <div class="thumb"><span class="emoji">🐾</span><img src="2026-06-16/group1/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 1" data-en="Group 1">Groupe 1</span><h3>Punto Jungle 🐾</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">punto-jungle</span></div>
+          <div class="shot"><span class="emoji">🐾</span><img src="2026-06-16/group1/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 1" data-en="Group 1">Groupe 1</span><h3>Punto Jungle 🐾</h3>
           <p data-fr="Jeu de plateau « Punto » version jungle : alignez 4 de vos animaux pour régner sur la canopée. Parties contre des bots de difficulté réglable."
-             data-en="“Punto” board game, jungle edition: line up 4 of your animals to rule the canopy. Play against bots with adjustable difficulty.">Jeu de plateau « Punto » version jungle : alignez 4 de vos animaux pour régner sur la canopée. Parties contre des bots de difficulté réglable.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="“Punto” board game, jungle edition: line up 4 of your animals to rule the canopy. Play against bots with adjustable difficulty.">Jeu de plateau « Punto » version jungle : alignez 4 de vos animaux pour régner sur la canopée. Parties contre des bots de difficulté réglable.</p></div>
       </a>
       <a class="card" href="2026-06-16/group2/" style="--c1:#d8f5e6;--c2:#aee6c8">
-        <div class="thumb"><span class="emoji">🍃</span><img src="2026-06-16/group2/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 2" data-en="Group 2">Groupe 2</span><h3>Équilibre</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">equilibre</span></div>
+          <div class="shot"><span class="emoji">🍃</span><img src="2026-06-16/group2/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 2" data-en="Group 2">Groupe 2</span><h3>Équilibre</h3>
           <p data-fr="Alimentation consciente : journal des ressentis de faim et reprogrammation mentale sur 21 jours, adaptée à votre profil."
-             data-en="Mindful eating: a journal of hunger sensations and a 21-day mental reprogramming tailored to your profile.">Alimentation consciente : journal des ressentis de faim et reprogrammation mentale sur 21 jours, adaptée à votre profil.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="Mindful eating: a journal of hunger sensations and a 21-day mental reprogramming tailored to your profile.">Alimentation consciente : journal des ressentis de faim et reprogrammation mentale sur 21 jours, adaptée à votre profil.</p></div>
       </a>
       <a class="card" href="2026-06-16/group3/" style="--c1:#d6f0ff;--c2:#a8d8f5">
-        <div class="thumb"><span class="emoji">🏢</span><img src="2026-06-16/group3/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 3" data-en="Group 3">Groupe 3</span><h3 data-fr="BODACC — capital en Isère" data-en="BODACC — capital in Isère">BODACC — capital en Isère</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">bodacc-isere</span></div>
+          <div class="shot"><span class="emoji">🏢</span><img src="2026-06-16/group3/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 3" data-en="Group 3">Groupe 3</span><h3 data-fr="BODACC — capital en Isère" data-en="BODACC — capital in Isère">BODACC — capital en Isère</h3>
           <p data-fr="Explore les changements de capital social des entreprises de l'Isère à partir des annonces BODACC (open data)."
-             data-en="Explore share-capital changes of companies in the Isère département, from BODACC announcements (open data).">Explore les changements de capital social des entreprises de l'Isère à partir des annonces BODACC (open data).</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="Explore share-capital changes of companies in the Isère département, from BODACC announcements (open data).">Explore les changements de capital social des entreprises de l'Isère à partir des annonces BODACC (open data).</p></div>
       </a>
       <a class="card" href="2026-06-16/group4/" style="--c1:#e2dcff;--c2:#c2b6f5">
-        <div class="thumb"><span class="emoji">💬</span><img src="2026-06-16/group4/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 4" data-en="Group 4">Groupe 4</span><h3>PSYVAGO</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">psyvago</span></div>
+          <div class="shot"><span class="emoji">💬</span><img src="2026-06-16/group4/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 4" data-en="Group 4">Groupe 4</span><h3>PSYVAGO</h3>
           <p data-fr="« Votre espace d'écoute » : annuaire de professionnels de santé (psychologues, médecins) via OpenDataSoft."
-             data-en="“Your listening space”: a directory of health professionals (psychologists, doctors) via OpenDataSoft.">« Votre espace d'écoute » : annuaire de professionnels de santé (psychologues, médecins) via OpenDataSoft.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="“Your listening space”: a directory of health professionals (psychologists, doctors) via OpenDataSoft.">« Votre espace d'écoute » : annuaire de professionnels de santé (psychologues, médecins) via OpenDataSoft.</p></div>
       </a>
       <a class="card" href="2026-06-16/group5/" style="--c1:#ffe9d6;--c2:#ffd0a8">
-        <div class="thumb"><span class="emoji">👋</span><img src="2026-06-16/group5/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 5" data-en="Group 5">Groupe 5</span><h3>Bonjour Juan</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">bonjour-juan</span></div>
+          <div class="shot"><span class="emoji">👋</span><img src="2026-06-16/group5/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 5" data-en="Group 5">Groupe 5</span><h3>Bonjour Juan</h3>
           <p data-fr="Page d'accueil minimale — point de départ à peine modifié."
-             data-en="A minimal home page — the starting point, barely changed.">Page d'accueil minimale — point de départ à peine modifié.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="A minimal home page — the starting point, barely changed.">Page d'accueil minimale — point de départ à peine modifié.</p></div>
       </a>
     </div>
   </section>
 
   <section>
-    <div class="session-head"><h2 data-fr="Session du 10 juin 2026" data-en="Session of 10 June 2026">Session du 10 juin 2026</h2><span class="tag" data-fr="branche <code>solution/2026-06-10</code>" data-en="branch <code>solution/2026-06-10</code>">branche <code>solution/2026-06-10</code></span></div>
+    <div class="sec-head"><h2 data-fr="Session du 10 juin 2026" data-en="Session of 10 June 2026">Session du 10 juin 2026</h2><span class="tag" data-fr="branche <code>solution/2026-06-10</code>" data-en="branch <code>solution/2026-06-10</code>">branche <code>solution/2026-06-10</code></span></div>
     <div class="grid">
       <a class="card" href="2026-06-10/group1/" style="--c1:#d8f5e6;--c2:#aee6c8">
-        <div class="thumb"><span class="emoji">⚽</span><img src="2026-06-10/group1/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 1" data-en="Group 1">Groupe 1</span><h3 data-fr="Terrains de foot — Genève" data-en="Football Pitches — Geneva">Terrains de foot — Genève</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">terrains-foot</span></div>
+          <div class="shot"><span class="emoji">⚽</span><img src="2026-06-10/group1/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 1" data-en="Group 1">Groupe 1</span><h3 data-fr="Terrains de foot — Genève" data-en="Football Pitches — Geneva">Terrains de foot — Genève</h3>
           <p data-fr="Réservation de terrains de foot à Genève : choix d'un créneau, code de réservation pour consulter/annuler, et gestion des terrains."
-             data-en="Football pitch booking in Geneva: pick a time slot, get a booking code to view or cancel, and manage the pitches.">Réservation de terrains de foot à Genève : choix d'un créneau, code de réservation pour consulter/annuler, et gestion des terrains.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="Football pitch booking in Geneva: pick a time slot, get a booking code to view or cancel, and manage the pitches.">Réservation de terrains de foot à Genève : choix d'un créneau, code de réservation pour consulter/annuler, et gestion des terrains.</p></div>
       </a>
       <a class="card" href="2026-06-10/group2/" style="--c1:#d6f0ff;--c2:#a8d8f5">
-        <div class="thumb"><span class="emoji">✈️</span><img src="2026-06-10/group2/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 2" data-en="Group 2">Groupe 2</span><h3>TravelMate</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">travelmate</span></div>
+          <div class="shot"><span class="emoji">✈️</span><img src="2026-06-10/group2/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 2" data-en="Group 2">Groupe 2</span><h3>TravelMate</h3>
           <p data-fr="Agence de voyage IA : décrivez votre voyage idéal et recevez un programme complet — vols, hôtel, activités, itinéraire jour par jour."
-             data-en="AI travel agency: describe your ideal trip and get a full plan — flights, hotel, activities, day-by-day itinerary.">Agence de voyage IA : décrivez votre voyage idéal et recevez un programme complet — vols, hôtel, activités, itinéraire jour par jour.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="AI travel agency: describe your ideal trip and get a full plan — flights, hotel, activities, day-by-day itinerary.">Agence de voyage IA : décrivez votre voyage idéal et recevez un programme complet — vols, hôtel, activités, itinéraire jour par jour.</p></div>
       </a>
       <a class="card" href="2026-06-10/group3/" style="--c1:#e2dcff;--c2:#c2b6f5">
-        <div class="thumb"><span class="emoji">🎫</span><img src="2026-06-10/group3/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 3" data-en="Group 3">Groupe 3</span><h3>ServiceDesk Workspace</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">servicedesk</span></div>
+          <div class="shot"><span class="emoji">🎫</span><img src="2026-06-10/group3/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 3" data-en="Group 3">Groupe 3</span><h3>ServiceDesk Workspace</h3>
           <p data-fr="Portail de support type ServiceNow : espace de travail de gestion de tickets."
-             data-en="A ServiceNow-style support portal: a ticket-management workspace.">Portail de support type ServiceNow : espace de travail de gestion de tickets.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="A ServiceNow-style support portal: a ticket-management workspace.">Portail de support type ServiceNow : espace de travail de gestion de tickets.</p></div>
       </a>
       <a class="card" href="2026-06-10/group4/recensement.html" style="--c1:#fde4cf;--c2:#f7c79c">
-        <div class="thumb"><span class="emoji">📋</span><img src="2026-06-10/group4/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 4" data-en="Group 4">Groupe 4</span><h3 data-fr="Recensement" data-en="Census">Recensement</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">recensement</span></div>
+          <div class="shot"><span class="emoji">📋</span><img src="2026-06-10/group4/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 4" data-en="Group 4">Groupe 4</span><h3 data-fr="Recensement" data-en="Census">Recensement</h3>
           <p data-fr="Liste de personnes avec détection des doublons de prénom et édition en ligne. (La page d'accueil du dépôt est restée un « Hello World ».)"
-             data-en="A list of people with first-name duplicate detection and inline editing. (The repo's home page stayed a “Hello World”.)">Liste de personnes avec détection des doublons de prénom et édition en ligne. (La page d'accueil du dépôt est restée un « Hello World ».)</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="A list of people with first-name duplicate detection and inline editing. (The repo's home page stayed a “Hello World”.)">Liste de personnes avec détection des doublons de prénom et édition en ligne. (La page d'accueil du dépôt est restée un « Hello World ».)</p></div>
       </a>
       <a class="card" href="2026-06-10/group5/" style="--c1:#e8f5d6;--c2:#cce8a8">
-        <div class="thumb"><span class="emoji">🌱</span><img src="2026-06-10/group5/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Groupe 5" data-en="Group 5">Groupe 5</span><h3>AgroAssistant</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">agroassistant</span></div>
+          <div class="shot"><span class="emoji">🌱</span><img src="2026-06-10/group5/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Groupe 5" data-en="Group 5">Groupe 5</span><h3>AgroAssistant</h3>
           <p data-fr="Assistant de diagnostic végétal : identifie les problèmes et maladies des plantes."
-             data-en="A plant-diagnosis assistant: identifies plant problems and diseases.">Assistant de diagnostic végétal : identifie les problèmes et maladies des plantes.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="A plant-diagnosis assistant: identifies plant problems and diseases.">Assistant de diagnostic végétal : identifie les problèmes et maladies des plantes.</p></div>
       </a>
     </div>
   </section>
 
   <section>
-    <div class="session-head"><h2 data-fr="Session du 6 mai 2026" data-en="Session of 6 May 2026">Session du 6 mai 2026</h2><span class="tag" data-fr="versions récupérées — tags <code>recovered/*</code>" data-en="recovered versions — tags <code>recovered/*</code>">versions récupérées — tags <code>recovered/*</code></span></div>
+    <div class="sec-head"><h2 data-fr="Session du 6 mai 2026" data-en="Session of 6 May 2026">Session du 6 mai 2026</h2><span class="tag" data-fr="versions récupérées — tags <code>recovered/*</code>" data-en="recovered versions — tags <code>recovered/*</code>">versions récupérées — tags <code>recovered/*</code></span></div>
     <div class="grid">
       <a class="card" href="2026-05-06/gestion-locative/" style="--c1:#d6f0ff;--c2:#a8d8f5">
-        <div class="thumb"><span class="emoji">🏠</span><img src="2026-05-06/gestion-locative/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Récupéré · groupe 1" data-en="Recovered · group 1">Récupéré · groupe 1</span><h3 data-fr="Gestion locative" data-en="Rental Management">Gestion locative</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">gestion-locative</span></div>
+          <div class="shot"><span class="emoji">🏠</span><img src="2026-05-06/gestion-locative/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Récupéré · groupe 1" data-en="Recovered · group 1">Récupéré · groupe 1</span><h3 data-fr="Gestion locative" data-en="Rental Management">Gestion locative</h3>
           <p data-fr="SPA de gestion locative — appartements, locations, loyers et charges — avec barre latérale et icônes Lucide. (Une variante backend Spring Boot + PostgreSQL existe sur la branche <code>vbackend</code>.)"
-             data-en="A rental-management SPA — apartments, leases, rents and charges — with a sidebar and Lucide icons. (A Spring Boot + PostgreSQL backend variant exists on the <code>vbackend</code> branch.)">SPA de gestion locative — appartements, locations, loyers et charges — avec barre latérale et icônes Lucide. (Une variante backend Spring Boot + PostgreSQL existe sur la branche <code>vbackend</code>.)</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="A rental-management SPA — apartments, leases, rents and charges — with a sidebar and Lucide icons. (A Spring Boot + PostgreSQL backend variant exists on the <code>vbackend</code> branch.)">SPA de gestion locative — appartements, locations, loyers et charges — avec barre latérale et icônes Lucide. (Une variante backend Spring Boot + PostgreSQL existe sur la branche <code>vbackend</code>.)</p></div>
       </a>
       <a class="card" href="2026-05-06/absences/" style="--c1:#e2dcff;--c2:#c2b6f5">
-        <div class="thumb"><span class="emoji">🗓️</span><img src="2026-05-06/absences/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Récupéré" data-en="Recovered">Récupéré</span><h3 data-fr="Gestion des absences" data-en="Absence Tracker">Gestion des absences</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">absences</span></div>
+          <div class="shot"><span class="emoji">🗓️</span><img src="2026-05-06/absences/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Récupéré" data-en="Recovered">Récupéré</span><h3 data-fr="Gestion des absences" data-en="Absence Tracker">Gestion des absences</h3>
           <p data-fr="Suivi des absences d'une équipe : saisie et liste des absences, avec persistance dans un fichier JSON partagé."
-             data-en="Team absence tracking: enter and list absences, persisted to a shared JSON file.">Suivi des absences d'une équipe : saisie et liste des absences, avec persistance dans un fichier JSON partagé.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="Team absence tracking: enter and list absences, persisted to a shared JSON file.">Suivi des absences d'une équipe : saisie et liste des absences, avec persistance dans un fichier JSON partagé.</p></div>
       </a>
       <a class="card" href="2026-05-06/timer/" style="--c1:#ffe0e0;--c2:#f7b9b9">
-        <div class="thumb"><span class="emoji">⏱️</span><img src="2026-05-06/timer/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Récupéré" data-en="Recovered">Récupéré</span><h3>HIIT / Tabata Timer</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">tabata-timer</span></div>
+          <div class="shot"><span class="emoji">⏱️</span><img src="2026-05-06/timer/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Récupéré" data-en="Recovered">Récupéré</span><h3>HIIT / Tabata Timer</h3>
           <p data-fr="Minuteur d'intervalles pour séances HIIT / Tabata : configuration des temps d'effort et de repos."
-             data-en="An interval timer for HIIT / Tabata workouts: configure work and rest durations.">Minuteur d'intervalles pour séances HIIT / Tabata : configuration des temps d'effort et de repos.</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="An interval timer for HIIT / Tabata workouts: configure work and rest durations.">Minuteur d'intervalles pour séances HIIT / Tabata : configuration des temps d'effort et de repos.</p></div>
       </a>
       <a class="card" href="2026-05-06/inscriptions/" style="--c1:#fde4cf;--c2:#f7c79c">
-        <div class="thumb"><span class="emoji">🎉</span><img src="2026-05-06/inscriptions/preview.png" alt="" loading="lazy"></div>
-        <div class="body"><span class="who" data-fr="Récupéré" data-en="Recovered">Récupéré</span><h3 data-fr="Fête du quartier" data-en="Neighborhood Party">Fête du quartier</h3>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span class="url">fete-quartier</span></div>
+          <div class="shot"><span class="emoji">🎉</span><img src="2026-05-06/inscriptions/preview.png" alt="" loading="lazy"></div></div>
+        <div class="meta"><span class="who" data-fr="Récupéré" data-en="Recovered">Récupéré</span><h3 data-fr="Fête du quartier" data-en="Neighborhood Party">Fête du quartier</h3>
           <p data-fr="Formulaire d'inscription à la fête du quartier (Formspree) avec autocomplétion d'adresse SITG (Genève)."
-             data-en="A sign-up form for the neighborhood party (Formspree) with SITG address autocomplete (Geneva).">Formulaire d'inscription à la fête du quartier (Formspree) avec autocomplétion d'adresse SITG (Genève).</p>
-          <span class="open" data-fr="Ouvrir <span class='arr'>→</span>" data-en="Open <span class='arr'>→</span>">Ouvrir <span class="arr">→</span></span></div>
+             data-en="A sign-up form for the neighborhood party (Formspree) with SITG address autocomplete (Geneva).">Formulaire d'inscription à la fête du quartier (Formspree) avec autocomplétion d'adresse SITG (Genève).</p></div>
       </a>
     </div>
   </section>
@@ -290,6 +363,24 @@
     if (b) set(b.getAttribute("data-lang"));
   });
   apply(pick());
+
+  // count-up stats (content-first: final value already in HTML, animate as enhancement)
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  if (!reduce) document.querySelectorAll("[data-count]").forEach(function(el){
+    var to = +el.dataset.count, suf = el.dataset.suffix || "", n = 0, step = Math.max(1, Math.round(to/40));
+    el.textContent = "0" + suf;
+    var t = setInterval(function(){ n += step; if (n >= to){ n = to; clearInterval(t); } el.textContent = n + suf; }, 22);
+  });
+
+  // 3D tilt on cards
+  if (!reduce) document.querySelectorAll(".card").forEach(function(card){
+    var frame = card.querySelector(".frame");
+    card.addEventListener("mousemove", function(ev){
+      var r = card.getBoundingClientRect(), x = (ev.clientX-r.left)/r.width-.5, y = (ev.clientY-r.top)/r.height-.5;
+      frame.style.transform = "rotateY(" + (x*9) + "deg) rotateX(" + (-y*9) + "deg) translateY(-6px)";
+    });
+    card.addEventListener("mouseleave", function(){ frame.style.transform = ""; });
+  });
 })();
 </script>
 </body>
